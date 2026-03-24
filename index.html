@@ -1,0 +1,1366 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>게임이론 학습자료 | 박사과정 미시경제학 2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Noto+Serif+KR:wght@400;700&family=JetBrains+Mono:wght@400;500&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<style>
+:root {
+  --bg: #0a0a0f;
+  --bg-card: #12121a;
+  --bg-card-hover: #1a1a28;
+  --border: #2a2a3d;
+  --border-light: #3a3a55;
+  --text: #e8e6f0;
+  --text-dim: #9895a8;
+  --text-muted: #6b6880;
+  --accent: #7c6df0;
+  --accent-light: #9b8ff5;
+  --accent-glow: rgba(124, 109, 240, 0.15);
+  --green: #4ade80;
+  --green-dim: rgba(74, 222, 128, 0.12);
+  --red: #f87171;
+  --red-dim: rgba(248, 113, 113, 0.12);
+  --yellow: #fbbf24;
+  --yellow-dim: rgba(251, 191, 36, 0.12);
+  --blue: #60a5fa;
+  --blue-dim: rgba(96, 165, 250, 0.12);
+  --orange: #fb923c;
+  --orange-dim: rgba(251, 146, 60, 0.12);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Noto Sans KR', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.8;
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+/* ─── NAV ─── */
+.side-nav {
+  position: fixed; left: 0; top: 0; bottom: 0;
+  width: 280px; background: var(--bg-card);
+  border-right: 1px solid var(--border);
+  overflow-y: auto; z-index: 100;
+  padding: 2rem 0;
+  transition: transform 0.3s;
+}
+.side-nav .logo {
+  padding: 0 1.5rem 1.5rem;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 1rem;
+}
+.side-nav .logo h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.3rem; color: var(--accent-light);
+  letter-spacing: -0.02em;
+}
+.side-nav .logo p {
+  font-size: 0.75rem; color: var(--text-muted);
+  margin-top: 0.25rem;
+}
+.nav-section {
+  padding: 0.75rem 1.5rem 0.25rem;
+  font-size: 0.65rem; text-transform: uppercase;
+  letter-spacing: 0.12em; color: var(--text-muted);
+  font-weight: 700;
+}
+.nav-item {
+  display: block; padding: 0.5rem 1.5rem;
+  font-size: 0.85rem; color: var(--text-dim);
+  text-decoration: none; transition: all 0.2s;
+  border-left: 2px solid transparent;
+  cursor: pointer;
+}
+.nav-item:hover { color: var(--text); background: var(--accent-glow); border-left-color: var(--accent); }
+.nav-item.active { color: var(--accent-light); border-left-color: var(--accent); background: var(--accent-glow); }
+
+/* ─── MAIN ─── */
+.main-content {
+  margin-left: 280px;
+  max-width: 900px;
+  padding: 3rem 3rem 6rem;
+}
+
+/* ─── HERO ─── */
+.hero {
+  position: relative;
+  padding: 4rem 0 3rem;
+  margin-bottom: 3rem;
+}
+.hero::after {
+  content: ''; position: absolute; bottom: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+}
+.hero-label {
+  font-size: 0.7rem; text-transform: uppercase;
+  letter-spacing: 0.2em; color: var(--accent);
+  font-weight: 700; margin-bottom: 1rem;
+}
+.hero h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: 3rem; font-weight: 900;
+  line-height: 1.15; letter-spacing: -0.03em;
+  background: linear-gradient(135deg, var(--text) 30%, var(--accent-light));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.hero p {
+  margin-top: 1.25rem; font-size: 1.05rem;
+  color: var(--text-dim); max-width: 600px; line-height: 1.9;
+}
+
+/* ─── SECTIONS ─── */
+.chapter {
+  margin-bottom: 4rem;
+  scroll-margin-top: 2rem;
+}
+.chapter-header {
+  display: flex; align-items: center; gap: 1rem;
+  margin-bottom: 2rem; padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border);
+}
+.chapter-num {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.5rem; font-weight: 900;
+  color: var(--accent); opacity: 0.5; line-height: 1;
+}
+.chapter-title {
+  font-family: 'Noto Serif KR', serif;
+  font-size: 1.6rem; font-weight: 700;
+}
+
+h3 {
+  font-family: 'Noto Serif KR', serif;
+  font-size: 1.2rem; font-weight: 700;
+  margin: 2.5rem 0 1rem;
+  color: var(--text);
+  padding-left: 0.75rem;
+  border-left: 3px solid var(--accent);
+}
+h4 {
+  font-size: 1rem; font-weight: 700;
+  margin: 1.5rem 0 0.75rem; color: var(--text);
+}
+p { margin-bottom: 1rem; color: var(--text-dim); }
+strong { color: var(--text); font-weight: 700; }
+
+/* ─── CARDS ─── */
+.concept-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.75rem;
+  margin: 1.5rem 0;
+  transition: border-color 0.3s;
+}
+.concept-card:hover { border-color: var(--border-light); }
+.concept-card.definition {
+  border-left: 3px solid var(--accent);
+}
+.concept-card.example {
+  border-left: 3px solid var(--green);
+  background: linear-gradient(135deg, var(--bg-card), rgba(74,222,128,0.03));
+}
+.concept-card.warning {
+  border-left: 3px solid var(--yellow);
+  background: linear-gradient(135deg, var(--bg-card), rgba(251,191,36,0.03));
+}
+.concept-card.insight {
+  border-left: 3px solid var(--blue);
+  background: linear-gradient(135deg, var(--bg-card), rgba(96,165,250,0.03));
+}
+.card-label {
+  font-size: 0.7rem; text-transform: uppercase;
+  letter-spacing: 0.15em; font-weight: 700;
+  margin-bottom: 0.75rem;
+}
+.card-label.def { color: var(--accent); }
+.card-label.ex { color: var(--green); }
+.card-label.warn { color: var(--yellow); }
+.card-label.tip { color: var(--blue); }
+
+/* ─── GAME MATRIX ─── */
+.matrix-wrap {
+  overflow-x: auto; margin: 1.25rem 0;
+}
+.game-matrix {
+  border-collapse: collapse;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.88rem;
+  margin: 0 auto;
+}
+.game-matrix th, .game-matrix td {
+  border: 1px solid var(--border);
+  padding: 0.6rem 1.1rem;
+  text-align: center;
+}
+.game-matrix th {
+  background: var(--accent-glow);
+  color: var(--accent-light);
+  font-weight: 500;
+}
+.game-matrix td { color: var(--text-dim); }
+.game-matrix .player-label {
+  background: none;
+  color: var(--text-muted);
+  font-style: italic;
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 0.8rem;
+}
+.game-matrix .highlight-cell {
+  background: var(--accent-glow);
+  color: var(--accent-light);
+  font-weight: 700;
+}
+.game-matrix .ne-cell {
+  background: var(--green-dim);
+  color: var(--green);
+  font-weight: 700;
+}
+
+/* ─── TREE DIAGRAMS (SVG) ─── */
+.tree-container {
+  margin: 1.5rem 0;
+  text-align: center;
+  overflow-x: auto;
+}
+.tree-container svg {
+  max-width: 100%;
+}
+
+/* ─── STEP BOX ─── */
+.step-box {
+  display: flex; gap: 1rem; align-items: flex-start;
+  margin: 1rem 0;
+}
+.step-num {
+  flex-shrink: 0;
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--bg);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.85rem; font-weight: 700;
+}
+.step-content { flex: 1; }
+.step-content p { margin-bottom: 0.5rem; }
+
+/* ─── TOGGLE (Accordion) ─── */
+.toggle-section {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  margin: 1rem 0;
+  overflow: hidden;
+}
+.toggle-header {
+  padding: 1rem 1.25rem;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: space-between;
+  font-weight: 500; color: var(--text);
+  transition: background 0.2s;
+}
+.toggle-header:hover { background: var(--bg-card-hover); }
+.toggle-header .arrow {
+  transition: transform 0.3s;
+  color: var(--text-muted);
+}
+.toggle-header.open .arrow { transform: rotate(90deg); }
+.toggle-body {
+  display: none;
+  padding: 0 1.25rem 1.25rem;
+  border-top: 1px solid var(--border);
+}
+.toggle-body.show { display: block; }
+
+/* ─── MATH ─── */
+.math-block {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1.25rem 1.5rem;
+  margin: 1rem 0;
+  overflow-x: auto;
+  text-align: center;
+}
+.katex { font-size: 1.05em; }
+
+/* ─── TAGS ─── */
+.tag {
+  display: inline-block;
+  font-size: 0.7rem; font-weight: 700;
+  padding: 0.2rem 0.6rem;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.tag-purple { background: var(--accent-glow); color: var(--accent-light); }
+.tag-green { background: var(--green-dim); color: var(--green); }
+.tag-red { background: var(--red-dim); color: var(--red); }
+.tag-yellow { background: var(--yellow-dim); color: var(--yellow); }
+
+/* ─── COMPARISON ─── */
+.comparison {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem; margin: 1.5rem 0;
+}
+.comparison-item {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1.25rem;
+}
+.comparison-item h4 { margin-top: 0; }
+
+/* ─── MOBILE ─── */
+.menu-toggle {
+  display: none; position: fixed; top: 1rem; left: 1rem;
+  z-index: 200; background: var(--bg-card); border: 1px solid var(--border);
+  color: var(--text); padding: 0.5rem 0.75rem; border-radius: 8px;
+  cursor: pointer; font-size: 1.2rem;
+}
+@media (max-width: 900px) {
+  .menu-toggle { display: block; }
+  .side-nav { transform: translateX(-100%); }
+  .side-nav.open { transform: translateX(0); }
+  .main-content { margin-left: 0; padding: 2rem 1.25rem 4rem; }
+  .hero h1 { font-size: 2rem; }
+  .comparison { grid-template-columns: 1fr; }
+}
+
+/* ─── KaTeX adjustments ─── */
+.katex-display { margin: 0.75em 0; }
+</style>
+</head>
+<body>
+
+<button class="menu-toggle" onclick="document.querySelector('.side-nav').classList.toggle('open')">☰</button>
+
+<nav class="side-nav" id="sideNav">
+  <div class="logo">
+    <h2>Game Theory</h2>
+    <p>SKKU 박사과정 미시경제학 II</p>
+  </div>
+
+  <div class="nav-section">Lecture 1 — 서론</div>
+  <a class="nav-item" href="#intro">게임이론이란?</a>
+  <a class="nav-item" href="#elements">게임의 3요소</a>
+  <a class="nav-item" href="#forms">전략형 vs 전개형</a>
+
+  <div class="nav-section">Lecture 2 — 전략형 게임</div>
+  <a class="nav-item" href="#strategic-def">전략형 게임 정의</a>
+  <a class="nav-item" href="#mixed">혼합전략</a>
+  <a class="nav-item" href="#dominance">우월전략과 지배</a>
+  <a class="nav-item" href="#idsds">IDSDS</a>
+  <a class="nav-item" href="#nash">내쉬균형</a>
+  <a class="nav-item" href="#msne">혼합전략 내쉬균형</a>
+  <a class="nav-item" href="#thpe">Trembling Hand</a>
+  <a class="nav-item" href="#cournot">쿠르노 모형</a>
+  <a class="nav-item" href="#bertrand">베르트랑 모형</a>
+  <a class="nav-item" href="#hotelling">호텔링 모형</a>
+  <a class="nav-item" href="#median">중위투표자 정리</a>
+
+  <div class="nav-section">Lecture 3 — 전개형 게임</div>
+  <a class="nav-item" href="#extensive">전개형 게임 정의</a>
+  <a class="nav-item" href="#info-set">정보집합</a>
+  <a class="nav-item" href="#backward">역진귀납법</a>
+  <a class="nav-item" href="#spne">SPNE</a>
+  <a class="nav-item" href="#stackelberg">슈타켈버그 경쟁</a>
+  <a class="nav-item" href="#forward">전진귀납법</a>
+</nav>
+
+<main class="main-content">
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- HERO -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="hero">
+  <div class="hero-label">SKKU Economics Ph.D. · Microeconomics II</div>
+  <h1>게임이론<br>완전 정복 가이드</h1>
+  <p>성균관대학교 이기영 교수님의 강의노트(Lecture 1–3)를 기반으로, 기초부터 차근차근 설명하는 학습자료입니다. 전략형 게임부터 전개형 게임, SPNE까지 핵심 개념과 풀이 방법을 다룹니다.</p>
+</section>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- LECTURE 1: INTRODUCTION -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="chapter" id="intro">
+  <div class="chapter-header">
+    <span class="chapter-num">01</span>
+    <span class="chapter-title">게임이론이란 무엇인가?</span>
+  </div>
+
+  <p>지금까지 경제학에서 배운 모형들(수요-공급, 완전경쟁 장기균형 등)은 주로 <strong>개별 경제주체가 독립적으로 의사결정</strong>하는 상황을 다뤘습니다. 하지만 현실에서는 <strong>나의 결과가 상대방의 행동에 달려 있는</strong> 상황이 빈번합니다.</p>
+
+  <div class="concept-card insight">
+    <div class="card-label tip">핵심 아이디어</div>
+    <p><strong>게임이론</strong>은 <em>전략적 상호작용(strategic interaction)</em> 상황을 분석하는 수학적 도구입니다. 각 경제주체의 최적 행동이 상대방의 행동에 의존하고, 이런 문제를 동시에 풀어내야 하는 상황을 연구합니다.</p>
+  </div>
+
+  <h3>왜 최적화만으로는 부족한가?</h3>
+  <p>이베이 경매를 떠올려보세요. 입찰자 1의 최적 입찰가는 입찰자 2의 입찰가에 달려 있고, 입찰자 2의 최적 입찰가는 입찰자 1의 입찰가에 달려 있습니다. 단순한 개별 최적화로는 이 <strong>"순환적 의존관계"</strong>를 해결할 수 없습니다.</p>
+
+  <div class="concept-card example">
+    <div class="card-label ex">실제 응용 분야</div>
+    <p>게임이론은 미시경제학의 핵심 이론으로, 다음과 같은 분야에 광범위하게 적용됩니다:</p>
+    <p><strong>은행 위기</strong>(Bank Runs), <strong>규제 설계</strong>, <strong>주파수 경매</strong>(Spectrum Auctions), <strong>신장 교환</strong>(Kidney Exchange), <strong>학교 선택</strong>(School Choice), <strong>정치 플랫폼</strong>, <strong>스포츠 전략</strong>, <strong>전쟁과 갈등</strong> 등</p>
+  </div>
+
+  <div class="toggle-section">
+    <div class="toggle-header" onclick="toggleSection(this)">
+      📖 예시: Bank Run (Diamond & Dybvig, 1983)
+      <span class="arrow">▶</span>
+    </div>
+    <div class="toggle-body">
+      <p>100명의 예금자가 각각 $1씩 은행에 예금했습니다. 은행은 $90을 투자에, $10을 지급준비금으로 운용합니다.</p>
+      <p>만약 예금자들이 "은행이 투자금 $90을 모두 잃었다"고 믿게 되면?</p>
+      <p>• 인출자 ≤ 10명 → 은행은 정상적으로 지급<br>
+      • 인출자 > 10명 → 은행 디폴트!</p>
+      <p>각 예금자의 "최선의 선택"은 <strong>다른 예금자들이 어떻게 행동할 것인지</strong>에 전적으로 달려 있습니다. 이것이 바로 게임이론적 상황입니다.</p>
+    </div>
+  </div>
+</section>
+
+<!-- GAME ELEMENTS -->
+<section class="chapter" id="elements">
+  <div class="chapter-header">
+    <span class="chapter-num">02</span>
+    <span class="chapter-title">비협조적 게임의 3요소</span>
+  </div>
+
+  <div class="comparison">
+    <div class="comparison-item">
+      <h4>🤝 협조적 게임 (Cooperative)</h4>
+      <p style="font-size:0.9rem">• 플레이어들이 <strong>구속력 있는 합의</strong>를 할 수 있음<br>
+      • 연합(coalition)이 무엇을 달성할 수 있는지에 초점<br>
+      • von Neumann & Morgenstern 전통</p>
+    </div>
+    <div class="comparison-item">
+      <h4>⚔️ 비협조적 게임 (Non-cooperative)</h4>
+      <p style="font-size:0.9rem">• 구속력 있는 합의가 <strong>불가능</strong><br>
+      • 개별적(individualistic) 관점 강조<br>
+      • <strong>John Nash</strong> 전통<br>
+      • <em>이 과목에서 다루는 범위</em></p>
+    </div>
+  </div>
+
+  <div class="concept-card definition">
+    <div class="card-label def">정의 — 비협조적 게임의 3요소</div>
+    <div class="step-box">
+      <div class="step-num">1</div>
+      <div class="step-content"><p><strong>플레이어 집합 (Players)</strong> — 의사결정자들의 집합 \(N = \{1, 2, \ldots, n\}\)</p></div>
+    </div>
+    <div class="step-box">
+      <div class="step-num">2</div>
+      <div class="step-content"><p><strong>전략 공간 (Strategies)</strong> — 각 플레이어 \(i\)가 선택할 수 있는 전략들의 집합 \(S_i\)</p></div>
+    </div>
+    <div class="step-box">
+      <div class="step-num">3</div>
+      <div class="step-content"><p><strong>보수 함수 (Payoffs)</strong> — 모든 전략 조합에 대한 각 플레이어의 보수 \(u_i : S \to \mathbb{R}\)</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- FORMS -->
+<section class="chapter" id="forms">
+  <div class="chapter-header">
+    <span class="chapter-num">03</span>
+    <span class="chapter-title">게임의 두 가지 표현: 전략형 vs 전개형</span>
+  </div>
+
+  <div class="comparison">
+    <div class="comparison-item">
+      <h4>📊 전략형 (Strategic/Normal Form)</h4>
+      <p style="font-size:0.9rem">• 시점(timing)이 명시적이지 않음<br>
+      • 동시 선택 또는 전략 계획을 하나의 전략으로 표현<br>
+      • 보수 행렬(payoff matrix)로 표현</p>
+    </div>
+    <div class="comparison-item">
+      <h4>🌳 전개형 (Extensive Form)</h4>
+      <p style="font-size:0.9rem">• 행동의 <strong>시점(timing)</strong>이 명시적<br>
+      • 게임 트리(game tree)로 표현<br>
+      • 순차적 의사결정 가능</p>
+    </div>
+  </div>
+
+  <div class="concept-card example">
+    <div class="card-label ex">예시 — 죄수의 딜레마 (Prisoner's Dilemma)</div>
+    <p>게임이론에서 가장 유명한 게임입니다. 두 죄수가 자백 여부를 동시에 결정합니다.</p>
+    <div class="matrix-wrap">
+      <table class="game-matrix">
+        <tr>
+          <td class="player-label" rowspan="2" colspan="2">P1 \ P2</td>
+          <th>자백(C)</th>
+          <th>묵비(D)</th>
+        </tr>
+        <tr></tr>
+        <tr>
+          <th>자백(C)</th>
+          <td class="ne-cell">−6, −6</td>
+          <td>0, −9</td>
+        </tr>
+        <tr>
+          <th>묵비(D)</th>
+          <td>−9, 0</td>
+          <td>−1, −1</td>
+        </tr>
+      </table>
+    </div>
+    <p>각 칸의 첫 번째 숫자는 P1의 보수, 두 번째는 P2의 보수입니다. <span class="tag tag-green">NE</span> 표시된 (C,C)가 유일한 내쉬균형입니다. 두 사람 모두 묵비권을 행사하면 (−1, −1)로 더 나은 결과이지만, 합리적 개인에게는 자백이 우월전략입니다.</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- LECTURE 2: STRATEGIC FORM GAMES -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="chapter" id="strategic-def">
+  <div class="chapter-header">
+    <span class="chapter-num">04</span>
+    <span class="chapter-title">전략형 게임의 정의</span>
+  </div>
+
+  <div class="concept-card definition">
+    <div class="card-label def">정의 — n-인 전략형 게임</div>
+    <p>\(n\)-인 전략형(정규형) 게임 \(G\)는 다음 \(n\)-tuple입니다:</p>
+    <div class="math-block">
+      $$G = \{(S_1, u_1), (S_2, u_2), \ldots, (S_n, u_n)\}$$
+    </div>
+    <p>여기서:</p>
+    <p>• \(N = \{1, 2, \ldots, n\}\) — 플레이어 집합<br>
+    • \(S_i\) — 플레이어 \(i\)의 전략 공간 (비어 있지 않음)<br>
+    • \(u_i : \prod_{k \in N} S_k \to \mathbb{R}\) — 플레이어 \(i\)의 보수 함수</p>
+  </div>
+
+  <div class="concept-card insight">
+    <div class="card-label tip">표기법 정리</div>
+    <p>• \(S = \prod_{k=1}^{n} S_k\) — 전략 프로필들의 집합<br>
+    • \(s = (s_1, \ldots, s_n) \in S\) — 하나의 전략 프로필<br>
+    • \(S_{-i} = \prod_{k \neq i} S_k\) — 플레이어 \(i\)를 제외한 나머지의 전략 프로필 집합<br>
+    • \((s'_i, s_{-i})\) — 플레이어 \(i\)만 \(s'_i\)로 바꾸고 나머지는 그대로인 프로필</p>
+    <p style="margin-top:0.75rem">이 "\(-i\)" 표기법은 앞으로 매우 자주 등장하니 반드시 익숙해져야 합니다!</p>
+  </div>
+
+  <h3>암묵적 가정 (처음에는)</h3>
+  <p>전략형 게임의 기본 세팅에서는 두 가지를 <strong>암묵적으로 가정</strong>합니다:</p>
+  <p>① 플레이어들이 <strong>동시에</strong> 행동을 선택한다<br>
+  ② 모든 보수가 모든 플레이어에게 <strong>알려져 있다</strong> (완전 정보)</p>
+  <p>이 가정들은 나중에 완화될 것이며, 그때는 행동 순서와 정보 구조가 명시적으로 기술됩니다.</p>
+
+  <h3>대표적인 게임들</h3>
+
+  <div class="toggle-section">
+    <div class="toggle-header" onclick="toggleSection(this)">
+      🎵 성별 전쟁 (Battle of the Sexes)
+      <span class="arrow">▶</span>
+    </div>
+    <div class="toggle-body">
+      <p>Anne은 BTS 콘서트를 선호하고, Bob은 UCL 경기를 선호합니다. 둘 다 함께 가는 것을 더 좋아합니다.</p>
+      <div class="matrix-wrap">
+        <table class="game-matrix">
+          <tr><td class="player-label" colspan="2">Anne \ Bob</td><th>BTS</th><th>UCL</th></tr>
+          <tr><th>BTS</th><td class="ne-cell">4, 1</td><td>0, 0</td></tr>
+          <tr><th>UCL</th><td>0, 0</td><td class="ne-cell">1, 4</td></tr>
+        </table>
+      </div>
+      <p>순수전략 NE가 <strong>2개</strong>: (BTS, BTS)와 (UCL, UCL). 조정(coordination) 문제의 대표적 예시입니다.</p>
+    </div>
+  </div>
+
+  <div class="toggle-section">
+    <div class="toggle-header" onclick="toggleSection(this)">
+      🦌 사슴 사냥 (Stag Hunt) — Rousseau
+      <span class="arrow">▶</span>
+    </div>
+    <div class="toggle-body">
+      <p>두 사냥꾼이 사슴(협력 필요)이나 토끼(혼자 가능)를 사냥합니다.</p>
+      <div class="matrix-wrap">
+        <table class="game-matrix">
+          <tr><td class="player-label" colspan="2">H1 \ H2</td><th>사슴</th><th>토끼</th></tr>
+          <tr><th>사슴</th><td class="ne-cell">4, 4</td><td>1, 3</td></tr>
+          <tr><th>토끼</th><td>3, 1</td><td class="ne-cell">2, 2</td></tr>
+        </table>
+      </div>
+      <p>(사슴, 사슴)은 <em>파레토 우월</em>(payoff-dominant)하지만, (토끼, 토끼)는 <em>위험 우월</em>(risk-dominant)합니다. 어떤 균형이 선택될지는 신뢰에 달려 있습니다.</p>
+    </div>
+  </div>
+
+  <div class="toggle-section">
+    <div class="toggle-header" onclick="toggleSection(this)">
+      🪙 동전 맞추기 (Matching Pennies)
+      <span class="arrow">▶</span>
+    </div>
+    <div class="toggle-body">
+      <div class="matrix-wrap">
+        <table class="game-matrix">
+          <tr><td class="player-label" colspan="2">Anne \ Bob</td><th>H</th><th>T</th></tr>
+          <tr><th>H</th><td>+1, −1</td><td>−1, +1</td></tr>
+          <tr><th>T</th><td>−1, +1</td><td>+1, −1</td></tr>
+        </table>
+      </div>
+      <p>순수전략 NE가 <strong>존재하지 않습니다!</strong> 이것이 혼합전략(mixed strategy) 개념이 필요한 이유입니다.</p>
+    </div>
+  </div>
+</section>
+
+<!-- MIXED STRATEGIES -->
+<section class="chapter" id="mixed">
+  <div class="chapter-header">
+    <span class="chapter-num">05</span>
+    <span class="chapter-title">혼합전략 (Mixed Strategies)</span>
+  </div>
+
+  <div class="concept-card definition">
+    <div class="card-label def">정의 — 혼합전략</div>
+    <p>\(S_i\)의 원소들을 <strong>순수전략(pure strategy)</strong>이라 합니다. 플레이어 \(i\)의 <strong>혼합전략</strong> \(\sigma_i\)는 \(S_i\) 위의 확률분포입니다:</p>
+    <div class="math-block">
+      $$\sigma_i \in \Delta(S_i), \quad \sigma_i : S_i \to [0,1], \quad \sum_{s_i \in S_i} \sigma_i(s_i) = 1$$
+    </div>
+  </div>
+
+  <h3>기대보수의 계산</h3>
+  <p>혼합전략 프로필 \((\sigma_1, \ldots, \sigma_n)\)에서의 기대보수는:</p>
+  <div class="math-block">
+    $$u_i(\sigma_1, \ldots, \sigma_n) = \sum_{s_1 \in S_1} \cdots \sum_{s_n \in S_n} u_i(s_1, \ldots, s_n) \cdot \sigma_1(s_1) \cdots \sigma_n(s_n)$$
+  </div>
+
+  <div class="concept-card example">
+    <div class="card-label ex">예시 — Matching Pennies의 기대보수</div>
+    <p>\(\sigma_i(H) = \sigma_i(T) = \frac{1}{2}\)일 때 Anne의 기대보수:</p>
+    <div class="math-block">
+      $$u_A = (+1)\tfrac{1}{2}\tfrac{1}{2} + (-1)\tfrac{1}{2}\tfrac{1}{2} + (-1)\tfrac{1}{2}\tfrac{1}{2} + (+1)\tfrac{1}{2}\tfrac{1}{2} = 0$$
+    </div>
+  </div>
+
+  <div class="concept-card warning">
+    <div class="card-label warn">주의 — 혼합전략 ≠ 상관전략</div>
+    <p>혼합전략에서는 각 플레이어가 <strong>독립적으로</strong> 랜덤화합니다. 따라서:</p>
+    <div class="math-block">
+      $$\prod_{j=1}^{n} \Delta(S_j) \neq \Delta\left(\prod_{j=1}^{n} S_j\right)$$
+    </div>
+    <p>좌변은 독립적 혼합전략의 공간이고, 우변은 상관(correlation)까지 허용한 분포의 공간입니다. 상관전략(correlated strategy)은 이 과목에서 다루지 않습니다.</p>
+  </div>
+</section>
+
+<!-- RATIONALITY & COMMON KNOWLEDGE -->
+<section class="chapter" id="dominance">
+  <div class="chapter-header">
+    <span class="chapter-num">06</span>
+    <span class="chapter-title">합리성, 공통지식, 그리고 지배</span>
+  </div>
+
+  <h3>합리성과 공통지식</h3>
+  <p>게임을 풀기 위해 우리는 <strong>합리성(rationality)</strong>을 가정합니다: 각 플레이어는 기대효용을 극대화합니다.</p>
+  <p>하지만 합리성만으로는 부족합니다. 추가로 <strong>공통지식(common knowledge)</strong>을 가정합니다:</p>
+  <p>• A는 B가 합리적임을 안다<br>
+  • B는 A가 B가 합리적임을 안다는 것을 안다<br>
+  • A는 B가 A가 B가 합리적임을 안다는 것을 안다는 것을 안다... <strong>(무한히 반복)</strong></p>
+
+  <div class="toggle-section">
+    <div class="toggle-header" onclick="toggleSection(this)">
+      👁️ 파란눈 섬주민 퍼즐 (Blue-Eyed Islanders)
+      <span class="arrow">▶</span>
+    </div>
+    <div class="toggle-body">
+      <p>섬에 파란눈/갈색눈 주민이 있고, 거울이 없어 자신의 눈 색을 모릅니다. 규칙: 자기 눈이 파란색임을 알면 자정에 떠나야 합니다.</p>
+      <p>방문자가 공개적으로 "이 섬에 파란눈인 사람이 최소 한 명 있습니다"라고 선언합니다.</p>
+      <p>만약 파란눈이 정확히 \(k\)명이면, \(k\)일째 밤에 모든 파란눈 주민이 떠나게 됩니다! 핵심은 방문자의 발언이 <strong>공통지식</strong>을 만들어낸다는 점입니다. 모두가 파란눈을 볼 수 있었지만, "모두가 모두가 안다는 것을 안다"는 것이 없었기에 아무도 행동하지 못했던 겁니다.</p>
+    </div>
+  </div>
+
+  <h3>엄격 지배 (Strict Dominance)</h3>
+
+  <div class="concept-card definition">
+    <div class="card-label def">정의 — 엄격 지배</div>
+    <p>전략 \(s'_i\)가 \(s''_i\)를 <strong>엄격히 지배</strong>한다 ⟺</p>
+    <div class="math-block">
+      $$u_i(s'_i, s_{-i}) > u_i(s''_i, s_{-i}) \quad \forall s_{-i} \in S_{-i}$$
+    </div>
+    <p>즉, 상대가 무엇을 하든 \(s'_i\)가 항상 더 높은 보수를 줍니다.</p>
+    <p>\(s_i\)가 <strong>엄격 우월전략(strictly dominant strategy)</strong> ⟺ \(s_i\)가 \(S_i \setminus \{s_i\}\)의 모든 전략을 엄격히 지배</p>
+  </div>
+
+  <div class="concept-card example">
+    <div class="card-label ex">예시 — 죄수의 딜레마에서의 우월전략</div>
+    <p>죄수의 딜레마에서 '자백(Confess)'은 우월전략입니다:</p>
+    <p>• 상대가 자백 → 나도 자백(-6) > 묵비(-9)<br>
+    • 상대가 묵비 → 나도 자백(0) > 묵비(-1)</p>
+    <p>어떤 경우에도 자백이 더 나으므로, 합리적 플레이어라면 반드시 자백합니다.</p>
+  </div>
+
+  <h3>혼합전략에 의한 지배</h3>
+  <div class="concept-card definition">
+    <div class="card-label def">정의</div>
+    <p>순수전략 \(s'_i\)가 혼합전략 \(\sigma_i \in \Delta(S_i)\)에 의해 <strong>엄격히 지배</strong>된다 ⟺</p>
+    <div class="math-block">
+      $$u_i(s'_i, s_{-i}) < u_i(\sigma_i, s_{-i}) \quad \forall s_{-i} \in S_{-i}$$
+    </div>
+  </div>
+
+  <div class="concept-card example">
+    <div class="card-label ex">예시 — 혼합전략에 의한 지배</div>
+    <div class="matrix-wrap">
+      <table class="game-matrix">
+        <tr><td class="player-label" colspan="2">Anne \ Bob</td><th>L</th><th>R</th></tr>
+        <tr><th>U</th><td>3, 0</td><td>0, 0</td></tr>
+        <tr><th>M</th><td>0, 0</td><td>3, 0</td></tr>
+        <tr><th>D</th><td>1, 0</td><td>1, 0</td></tr>
+      </table>
+    </div>
+    <p>D는 어떤 순수전략에 의해서도 지배되지 않습니다. 하지만 \(\sigma = \frac{1}{2}U + \frac{1}{2}M\)이면:</p>
+    <p>• Bob이 L → 기대보수 = \(\frac{1}{2}(3) + \frac{1}{2}(0) = 1.5 > 1\)<br>
+    • Bob이 R → 기대보수 = \(\frac{1}{2}(0) + \frac{1}{2}(3) = 1.5 > 1\)</p>
+    <p>따라서 D는 <strong>혼합전략에 의해 엄격히 지배</strong>됩니다!</p>
+  </div>
+</section>
+
+<!-- IDSDS -->
+<section class="chapter" id="idsds">
+  <div class="chapter-header">
+    <span class="chapter-num">07</span>
+    <span class="chapter-title">엄격 지배 전략의 반복 제거 (IDSDS)</span>
+  </div>
+
+  <div class="concept-card definition">
+    <div class="card-label def">정의 — IDSDS</div>
+    <p><strong>Iterated Deletion of Strictly Dominated Strategies</strong>의 절차:</p>
+    <div class="step-box">
+      <div class="step-num">1</div>
+      <div class="step-content"><p>엄격히 지배되는 모든 전략을 제거합니다.</p></div>
+    </div>
+    <div class="step-box">
+      <div class="step-num">2</div>
+      <div class="step-content"><p>축소된 게임에서 다시 엄격히 지배되는 전략이 있는가? 있으면 → 1로 돌아감. 없으면 → 종료.</p></div>
+    </div>
+    <p style="margin-top:1rem">이 과정이 <strong>유일한 결과</strong>로 수렴하면 그 게임을 <strong>지배에 의해 풀린다(dominance solvable)</strong>고 합니다.</p>
+  </div>
+
+  <div class="concept-card warning">
+    <div class="card-label warn">주의 — 약한 지배의 반복 제거 (IDWDS)는 순서에 의존!</div>
+    <div class="matrix-wrap">
+      <table class="game-matrix">
+        <tr><td class="player-label" colspan="2">Anne \ Bob</td><th>L</th><th>R</th></tr>
+        <tr><th>U</th><td>1, 1</td><td>0, 0</td></tr>
+        <tr><th>M</th><td>1, 1</td><td>2, 1</td></tr>
+        <tr><th>D</th><td>0, 0</td><td>2, 1</td></tr>
+      </table>
+    </div>
+    <p><strong>엄격 지배</strong>의 반복 제거는 제거 순서에 무관하게 같은 결과를 줍니다. 하지만 <strong>약한 지배</strong>의 반복 제거는 순서에 따라 다른 결과가 나올 수 있어 균형 개념으로 사용하기 어렵습니다.</p>
+  </div>
+</section>
+
+<!-- NASH EQUILIBRIUM -->
+<section class="chapter" id="nash">
+  <div class="chapter-header">
+    <span class="chapter-num">08</span>
+    <span class="chapter-title">내쉬균형 (Nash Equilibrium)</span>
+  </div>
+
+  <p>많은 게임에서 IDSDS만으로는 유일한 전략 프로필을 특정할 수 없습니다. 더 강력한 균형 개념이 필요합니다.</p>
+
+  <div class="concept-card definition">
+    <div class="card-label def">정의 — 최적 대응 (Best Response)</div>
+    <p>\(\sigma_{-i} \in \Delta(S_{-i})\)가 주어졌을 때, \(s_i \in S_i\)가 <strong>최적 대응</strong> ⟺</p>
+    <div class="math-block">
+      $$u_i(s_i, \sigma_{-i}) \geq u_i(s'_i, \sigma_{-i}) \quad \forall s'_i \in S_i$$
+    </div>
+    <p>최적 대응의 집합을 \(BR_i(\sigma_{-i})\)로 표기합니다.</p>
+  </div>
+
+  <div class="concept-card definition">
+    <div class="card-label def">정의 — 순수전략 내쉬균형</div>
+    <p>전략 프로필 \(s^* \in S\)가 <strong>순수전략 내쉬균형(PSNE)</strong> ⟺</p>
+    <div class="math-block">
+      $$u_i(s^*_i, s^*_{-i}) \geq u_i(s'_i, s^*_{-i}) \quad \forall i \in N, \; \forall s'_i \in S_i$$
+    </div>
+    <p>동치 표현: \(s^*_i \in BR_i(s^*_{-i})\) for all \(i \in N\)</p>
+    <p style="margin-top:0.75rem"><strong>직관:</strong> 각 플레이어가 상대방의 전략을 <em>주어진 것</em>으로 보았을 때, 아무도 자신의 전략을 바꿀 인센티브가 없는 상태입니다.</p>
+  </div>
+
+  <div class="concept-card insight">
+    <div class="card-label tip">내쉬균형의 해석 4가지</div>
+    <p><strong>①</strong> 게임이 어떻게 플레이될지에 대한 <strong>예측</strong><br>
+    <strong>②</strong> 실제 플레이와 비교하기 위한 <strong>벤치마크</strong><br>
+    <strong>③</strong> 사전 소통이나 사회적 규범을 통해 형성된 <strong>안정적인 전략 프로필</strong><br>
+    <strong>④</strong> <strong>합리적 기대</strong>를 충족하는 프로필: 각 플레이어의 선택이 다른 플레이어들의 그에 대한 믿음을 확인해주는 상태</p>
+  </div>
+
+  <h3>NE 찾는 방법 — 밑줄 긋기(Underline Method)</h3>
+  <p>유한 게임에서 NE를 찾는 가장 실전적인 방법은 <strong>밑줄 긋기</strong>입니다:</p>
+  <div class="step-box">
+    <div class="step-num">1</div>
+    <div class="step-content"><p>Bob의 각 전략에 대해 Anne의 최적 대응(가장 높은 보수)에 밑줄을 긋습니다.</p></div>
+  </div>
+  <div class="step-box">
+    <div class="step-num">2</div>
+    <div class="step-content"><p>Anne의 각 전략에 대해 Bob의 최적 대응에 밑줄을 긋습니다.</p></div>
+  </div>
+  <div class="step-box">
+    <div class="step-num">3</div>
+    <div class="step-content"><p>양쪽 모두에 밑줄이 그어진 칸이 NE입니다.</p></div>
+  </div>
+</section>
+
+<!-- MIXED STRATEGY NE -->
+<section class="chapter" id="msne">
+  <div class="chapter-header">
+    <span class="chapter-num">09</span>
+    <span class="chapter-title">혼합전략 내쉬균형 (MSNE)</span>
+  </div>
+
+  <div class="concept-card definition">
+    <div class="card-label def">정의 — 혼합전략 내쉬균형</div>
+    <div class="math-block">
+      $$(\sigma^*_1, \ldots, \sigma^*_n) \text{ 이 MSNE} \iff u_i(\sigma^*_i, \sigma^*_{-i}) \geq u_i(\sigma'_i, \sigma^*_{-i}) \;\; \forall i, \; \forall \sigma'_i \in \Delta(S_i)$$
+    </div>
+  </div>
+
+  <div class="concept-card insight">
+    <div class="card-label tip">MSNE의 핵심 성질 — 무차별 조건</div>
+    <p>MSNE에서 양의 확률로 사용되는 모든 순수전략은 <strong>동일한 기대보수</strong>를 줍니다. 그리고 사용되지 않는 전략은 더 낮은 보수를 줍니다.</p>
+    <p><strong>왜?</strong> 만약 어떤 순수전략이 더 높은 기대보수를 준다면, 합리적 플레이어는 그 전략에 확률 1을 줄 것이므로 혼합할 이유가 없습니다.</p>
+  </div>
+
+  <h3>MSNE 풀이법</h3>
+  <div class="concept-card example">
+    <div class="card-label ex">예시 — Matching Pennies의 MSNE</div>
+    <div class="matrix-wrap">
+      <table class="game-matrix">
+        <tr><td class="player-label" colspan="2">Anne \ Bob</td><th>H</th><th>T</th></tr>
+        <tr><th>H</th><td>+1, −1</td><td>−1, +1</td></tr>
+        <tr><th>T</th><td>−1, +1</td><td>+1, −1</td></tr>
+      </table>
+    </div>
+    <p>\(p_B = \Pr(\text{Bob plays H})\)라 하면, Anne의 기대보수는:</p>
+    <p>• Anne이 H 선택 → \(p_B \cdot 1 + (1-p_B)(-1) = 2p_B - 1\)<br>
+    • Anne이 T 선택 → \(p_B(-1) + (1-p_B) \cdot 1 = 1 - 2p_B\)</p>
+    <p><strong>무차별 조건:</strong> \(2p_B - 1 = 1 - 2p_B\) → \(p_B = \frac{1}{2}\)</p>
+    <p>대칭적으로 \(p_A = \frac{1}{2}\). 따라서 유일한 MSNE는 \(\left(\left(\frac{1}{2}, \frac{1}{2}\right), \left(\frac{1}{2}, \frac{1}{2}\right)\right)\)입니다.</p>
+  </div>
+
+  <div class="concept-card example">
+    <div class="card-label ex">예시 — PSNE와 MSNE가 공존하는 경우</div>
+    <div class="matrix-wrap">
+      <table class="game-matrix">
+        <tr><td class="player-label" colspan="2">P1 \ P2</td><th>L</th><th>R</th></tr>
+        <tr><th>T</th><td class="ne-cell">2, 1</td><td>0, 0</td></tr>
+        <tr><th>B</th><td>0, 0</td><td class="ne-cell">1, 1</td></tr>
+      </table>
+    </div>
+    <p><strong>PSNE:</strong> (T,L)과 (B,R)</p>
+    <p><strong>MSNE 풀이:</strong></p>
+    <p>P2의 무차별: \(2p_L = 1 - p_L\) → \(p_L = \frac{1}{3}\)<br>
+    P1의 무차별: \(p_T = 1 - p_T\) → \(p_T = \frac{1}{2}\)</p>
+    <p>따라서 MSNE: \(\left(\left(\frac{1}{2}, \frac{1}{2}\right), \left(\frac{1}{3}, \frac{2}{3}\right)\right)\)</p>
+    <p style="margin-top:0.75rem"><span class="tag tag-purple">총 NE 수 = 3 (홀수!)</span> Wilson-Harsanyi 정리에 의하면 "거의 모든" 유한 게임에서 NE의 수는 홀수입니다.</p>
+  </div>
+</section>
+
+<!-- TREMBLING HAND -->
+<section class="chapter" id="thpe">
+  <div class="chapter-header">
+    <span class="chapter-num">10</span>
+    <span class="chapter-title">떨리는 손 완전 균형 (Trembling Hand Perfect Equilibrium)</span>
+  </div>
+
+  <p>NE가 여러 개일 때 그 중 어떤 것이 "그럴듯한지" 가려내는 <strong>정련(refinement)</strong> 개념입니다.</p>
+
+  <div class="concept-card definition">
+    <div class="card-label def">정의 — THPE</div>
+    <p>\(\sigma_i\)가 <strong>완전 혼합(completely mixed)</strong>이라 함은 \(\sigma_i(s_i) > 0\) for all \(s_i \in S_i\).</p>
+    <p>전략 프로필 \(\sigma\)가 <strong>Trembling-Hand Perfect Equilibrium</strong> ⟺ 완전 혼합 전략열 \(\{\sigma^k\}\)가 존재하여:</p>
+    <div class="math-block">
+      $$(i)\; \lim_{k \to \infty} \sigma^k = \sigma, \qquad (ii)\; \sigma_i \in BR_i(\sigma^k_{-i}) \; \forall k$$
+    </div>
+    <p><strong>직관:</strong> 상대가 아주 작은 확률로 "실수(trembling)"를 한다고 가정해도 여전히 최적 대응이 되는 균형입니다.</p>
+  </div>
+
+  <div class="concept-card example">
+    <div class="card-label ex">예시</div>
+    <div class="matrix-wrap">
+      <table class="game-matrix">
+        <tr><td class="player-label" colspan="2">Anne \ Bob</td><th>L</th><th>R</th></tr>
+        <tr><th>L</th><td class="ne-cell">1, 1</td><td>0, −3</td></tr>
+        <tr><th>R</th><td>−3, 0</td><td class="highlight-cell">0, 0</td></tr>
+      </table>
+    </div>
+    <p>NE가 2개: (L,L)과 (R,R). 그런데 (R,R)에서는 둘 다 약하게 지배되는 전략을 씁니다.</p>
+    <p><strong>(R,R) 검증:</strong> Anne이 확률 \(\varepsilon\)로 L을 실수로 플레이한다고 가정. Bob의 기대보수는 L 선택 시 \(\varepsilon > 0\), R 선택 시 \(-3\varepsilon < 0\). 따라서 Bob의 최적대응은 L이지 R이 아닙니다.</p>
+    <p>→ <strong>(R,R)은 THPE가 아닙니다.</strong> (L,L)만 THPE입니다.</p>
+  </div>
+</section>
+
+<!-- COURNOT -->
+<section class="chapter" id="cournot">
+  <div class="chapter-header">
+    <span class="chapter-num">11</span>
+    <span class="chapter-title">쿠르노 복점 모형 (Cournot Duopoly)</span>
+  </div>
+
+  <div class="concept-card definition">
+    <div class="card-label def">모형 설정</div>
+    <p>• 2개 기업이 <strong>동질적 상품</strong>을 생산, <strong>동시에</strong> 생산량 결정<br>
+    • 시장 수요: \(P(Q) = \max\{a - Q, 0\}\), \(Q = q_1 + q_2\)<br>
+    • 비용: \(C(q_i) = cq_i\), \(0 < c < a\)</p>
+  </div>
+
+  <h3>풀이 과정</h3>
+  <p>기업 \(i\)의 이윤: \(u_i = [(a-c) - (q_i + q_{-i})]q_i\)</p>
+  <p>FOC로 <strong>최적 대응 함수</strong>를 구하면:</p>
+  <div class="math-block">
+    $$BR_1(q_2) = \frac{(a-c) - q_2}{2}, \qquad BR_2(q_1) = \frac{(a-c) - q_1}{2}$$
+  </div>
+  <p>NE에서 \(q_1 = BR_1(q_2)\)이고 \(q_2 = BR_2(q_1)\)이므로, 두 식을 연립하면:</p>
+  <div class="math-block">
+    $$q^*_1 = q^*_2 = \frac{a-c}{3}$$
+  </div>
+
+  <div class="concept-card insight">
+    <div class="card-label tip">NE에서 대칭성 증명</div>
+    <p>BR 함수를 연립하면 \(2q_1 + q_2 = (a-c) = q_1 + 2q_2\)이므로 \(q_1 = q_2\)가 반드시 성립합니다. 비대칭 비용(\(c_1 \neq c_2\))이면 대칭 결과는 깨집니다.</p>
+  </div>
+</section>
+
+<!-- BERTRAND -->
+<section class="chapter" id="bertrand">
+  <div class="chapter-header">
+    <span class="chapter-num">12</span>
+    <span class="chapter-title">베르트랑 가격 경쟁 (Bertrand Competition)</span>
+  </div>
+
+  <p>쿠르노와 동일한 수요/비용 구조이지만, 이번에는 기업들이 <strong>가격</strong>을 경쟁합니다.</p>
+
+  <div class="concept-card definition">
+    <div class="card-label def">모형 설정</div>
+    <p>• 소비자는 <strong>가장 낮은 가격</strong>을 제시한 기업에서 구매<br>
+    • 가격이 같으면 수요를 균등 분배</p>
+    <div class="math-block">
+      $$u_1(p_1, p_2) = \begin{cases} (p_1 - c)(a - p_1) & \text{if } p_1 < p_2 \\ \frac{(p_1 - c)(a-p_1)}{2} & \text{if } p_1 = p_2 \\ 0 & \text{if } p_1 > p_2 \end{cases}$$
+    </div>
+  </div>
+
+  <h3>결과: \(p^*_1 = p^*_2 = c\) (한계비용 가격설정)</h3>
+  <p>단 2개 기업만으로 <strong>완전경쟁 결과</strong>가 달성됩니다! (Bertrand Paradox)</p>
+
+  <div class="concept-card insight">
+    <div class="card-label tip">증명 스케치</div>
+    <p>• \(p_1 > p_2 > c\) → 기업 1의 이윤 = 0. 살짝 가격을 낮추면 양의 이윤 → 이탈 인센티브<br>
+    • \(p_1 = p_2 > c\) → 수요의 절반만 차지. 살짝 가격을 낮추면 전체 수요 획득 → 이탈 인센티브<br>
+    • \(p_1 = p_2 = c\) → 아무도 가격을 올리면 수요 = 0, 내리면 손실 → 이탈 인센티브 없음 ✓</p>
+  </div>
+</section>
+
+<!-- HOTELLING -->
+<section class="chapter" id="hotelling">
+  <div class="chapter-header">
+    <span class="chapter-num">13</span>
+    <span class="chapter-title">호텔링의 공간 경쟁 (Hotelling, 1929)</span>
+  </div>
+
+  <div class="concept-card definition">
+    <div class="card-label def">모형 설정</div>
+    <p>• 소비자 \(x \in [0,1]\)이 균일분포<br>
+    • 판매자 A는 위치 0, 판매자 B는 위치 1<br>
+    • 소비자 \(x\)의 효용: \(s - p_A - x\) (A에서 구매) 또는 \(s - p_B - (1-x)\) (B에서 구매)</p>
+  </div>
+
+  <h3>풀이</h3>
+  <p>소비자 \(x\)가 A를 선택 ⟺ \(\frac{(p_B - p_A) + 1}{2} \geq x\)</p>
+  <p>A의 이윤: \(\pi_A = p_A \cdot \frac{(p_B - p_A) + 1}{2}\)</p>
+  <p>FOC에서 최적 대응:</p>
+  <div class="math-block">
+    $$BR_A(p_B) = \frac{p_B + 1}{2}, \qquad BR_B(p_A) = \frac{p_A + 1}{2}$$
+  </div>
+  <p>NE에서 대칭성(\(p_A = p_B\))을 이용하면:</p>
+  <div class="math-block">
+    $$p^* = 1, \quad x^* = \frac{1}{2}$$
+  </div>
+  <p>시장이 정확히 반으로 나뉘며, 참여조건 \(s \geq 1.5\)가 필요합니다.</p>
+</section>
+
+<!-- MEDIAN VOTER -->
+<section class="chapter" id="median">
+  <div class="chapter-header">
+    <span class="chapter-num">14</span>
+    <span class="chapter-title">중위투표자 정리 (Median Voter Theorem)</span>
+  </div>
+
+  <div class="concept-card definition">
+    <div class="card-label def">모형 설정</div>
+    <p>• 정책 공간 \([0,1]\) (진보 → 보수)<br>
+    • 유권자의 이상점(ideal position)이 \([0,1]\)에서 균일분포<br>
+    • 2명의 후보가 동시에 정책 위치 \(s_i \in [0,1]\) 선택<br>
+    • 유권자는 자신에게 가장 가까운 후보에게 투표<br>
+    • 후보의 보수 = 득표율</p>
+  </div>
+
+  <h3>결과</h3>
+  <div class="math-block">
+    $$s^*_1 = s^*_2 = \frac{1}{2}$$
+  </div>
+  <p>두 후보 모두 <strong>중위투표자의 위치</strong>로 수렴합니다!</p>
+
+  <div class="concept-card insight">
+    <div class="card-label tip">직관</div>
+    <p>\(s_2\)가 주어졌을 때, 후보 1은 \(s_1 < s_2\)이면 \(s_1\)을 높일수록 득표율 증가, \(s_1 > s_2\)이면 \(s_1\)을 낮출수록 득표율 증가. 따라서 \(s_1 = s_2\)가 최적이고, 대칭적 NE는 \(\frac{1}{2}\)입니다. 현실 정치에서 양당이 중도로 수렴하는 현상을 설명하는 고전적 모형입니다.</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- LECTURE 3: EXTENSIVE FORM GAMES -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="chapter" id="extensive">
+  <div class="chapter-header">
+    <span class="chapter-num">15</span>
+    <span class="chapter-title">전개형 게임 (Extensive-Form Games)</span>
+  </div>
+
+  <p>지금까지의 전략형 게임은 모두 <strong>동시적</strong> 의사결정이었습니다. 이제 <strong>순차적(sequential)</strong>으로 행동하는 상황을 다룹니다.</p>
+
+  <div class="concept-card definition">
+    <div class="card-label def">정의 — 게임 트리(Tree)</div>
+    <p>트리는 방향 있는 아크(arc)로 연결된 노드(node)들의 집합으로, 다음을 만족합니다:</p>
+    <p>① <strong>시작 노드(initial node)</strong>가 존재<br>
+    ② 시작 노드를 제외한 각 노드는 <strong>정확히 하나의 들어오는 아크</strong>를 가짐<br>
+    ③ 각 노드는 <strong>유일한 경로</strong>를 통해 도달 가능</p>
+  </div>
+
+  <div class="concept-card definition">
+    <div class="card-label def">정의 — 전개형 게임</div>
+    <p>전개형 게임은 다음으로 구성됩니다:</p>
+    <p>① 플레이어 집합<br>
+    ② 게임 트리<br>
+    ③ 각 비종단 노드(non-terminal node)에 대한 플레이어 배정<br>
+    ④ <strong>정보 분할(information partition)</strong><br>
+    ⑤ 각 종단 노드(terminal node)에서의 보수</p>
+  </div>
+</section>
+
+<!-- INFO SET -->
+<section class="chapter" id="info-set">
+  <div class="chapter-header">
+    <span class="chapter-num">16</span>
+    <span class="chapter-title">정보집합과 전략의 구분</span>
+  </div>
+
+  <div class="concept-card definition">
+    <div class="card-label def">정의 — 정보집합 (Information Set)</div>
+    <p>정보집합은 다음을 만족하는 노드들의 모음입니다:</p>
+    <p>① 같은 플레이어가 각 노드에서 행동<br>
+    ② 각 노드에서 가능한 행동이 동일</p>
+    <p>플레이어가 자신이 어느 노드에 있는지 <strong>구분할 수 없을 때</strong> 해당 노드들은 같은 정보집합에 속하며, 점선으로 연결합니다.</p>
+  </div>
+
+  <div class="concept-card warning">
+    <div class="card-label warn">중요 — 행동(Action) vs 전략(Strategy)</div>
+    <p>전개형 게임에서 이 둘을 <strong>반드시 구분</strong>해야 합니다!</p>
+    <p><strong>행동(Action):</strong> 하나의 정보집합에서 선택하는 것<br>
+    <strong>전략(Strategy):</strong> 자신이 행동할 수 있는 <em>모든 정보집합</em>에서의 행동을 지정하는 <strong>완전한 계획</strong></p>
+    <p>— 해당 정보집합에 실제로 도달하지 않더라도!</p>
+  </div>
+
+  <div class="concept-card example">
+    <div class="card-label ex">예시 — 순차적 Matching Pennies</div>
+    <p>Bob이 먼저 H 또는 T를 선택하고, Anne이 Bob의 선택을 관찰한 후 행동합니다.</p>
+    <p>Bob의 순수전략: \(\{H, T\}\) (2개)<br>
+    Anne의 정보집합: \(h_a(1)\)(Bob이 H일 때), \(h_a(2)\)(Bob이 T일 때)<br>
+    Anne의 순수전략: \(\{HH, HT, TH, TT\}\) (4개!)</p>
+    <p>예를 들어 "TH"는 "Bob이 H이면 T를, Bob이 T이면 H를 선택"이라는 완전한 계획입니다.</p>
+  </div>
+
+  <div class="concept-card insight">
+    <div class="card-label tip">전략형 → 전개형 관계</div>
+    <p>• 모든 전개형 게임은 전략을 적절히 라벨링하면 <strong>유일한 정규형 표현</strong>이 있습니다.<br>
+    • 그 반대는 성립하지 않습니다: 하나의 정규형 게임에 <strong>여러 전개형 표현</strong>이 가능할 수 있습니다.</p>
+  </div>
+</section>
+
+<!-- BACKWARD INDUCTION -->
+<section class="chapter" id="backward">
+  <div class="chapter-header">
+    <span class="chapter-num">17</span>
+    <span class="chapter-title">역진귀납법 (Backward Induction)</span>
+  </div>
+
+  <div class="concept-card definition">
+    <div class="card-label def">정의 — 순차적 합리성 (Sequential Rationality)</div>
+    <p>플레이어의 전략이 <strong>순차적 합리성</strong>을 만족한다 ⟺ 자신이 행동하는 <strong>모든 정보집합</strong>에서 (해당 정보집합에 도달할 것이라고 믿지 않더라도) 기대보수를 극대화하는 행동을 지정합니다.</p>
+  </div>
+
+  <h3>역진귀납법의 절차</h3>
+  <div class="step-box">
+    <div class="step-num">1</div>
+    <div class="step-content"><p>게임 트리의 <strong>마지막 단계</strong>에서 각 플레이어의 최적 행동을 결정</p></div>
+  </div>
+  <div class="step-box">
+    <div class="step-num">2</div>
+    <div class="step-content"><p>그 직전 단계의 플레이어는 마지막 단계의 결과를 <strong>예측</strong>하고 최적 행동 결정</p></div>
+  </div>
+  <div class="step-box">
+    <div class="step-num">3</div>
+    <div class="step-content"><p>이를 시작 노드까지 <strong>반복</strong></p></div>
+  </div>
+
+  <div class="concept-card insight">
+    <div class="card-label tip">역진귀납법의 성질</div>
+    <p><strong>①</strong> 역진귀납은 항상 정규형의 NE를 산출하지만, 모든 NE가 역진귀납에서 나오지는 않음<br>
+    <strong>②</strong> 유한 시야(finite horizon) 완전 정보 게임은 항상 역진귀납으로 풀 수 있음<br>
+    <strong>③</strong> 제네릭 게임(모든 경로의 보수가 다른 게임)에서는 해가 유일</p>
+  </div>
+
+  <div class="concept-card warning">
+    <div class="card-label warn">주의 — 공통지식의 구분</div>
+    <p><strong>CKR</strong>(공통지식으로서의 합리성)과 <strong>CKSR</strong>(공통지식으로서의 순차적 합리성)은 다릅니다!</p>
+    <p>역진귀납은 CKSR의 결과이지 CKR의 결과가 아닙니다. 과거의 "실수"가 미래의 비합리성을 암시하지 않는다는 강한 가정이 필요합니다. 이것이 CKSR이 상당히 강한 가정인 이유입니다.</p>
+  </div>
+</section>
+
+<!-- SPNE -->
+<section class="chapter" id="spne">
+  <div class="chapter-header">
+    <span class="chapter-num">18</span>
+    <span class="chapter-title">부분게임 완전 내쉬균형 (SPNE)</span>
+  </div>
+
+  <p>역진귀납법을 적용할 수 없는 경우가 있습니다: ① 무한 기간 게임, ② 불완전 정보 게임. 이를 위해 더 일반적인 개념이 필요합니다.</p>
+
+  <div class="concept-card definition">
+    <div class="card-label def">정의 — 부분게임 (Subgame)</div>
+    <p>전개형 게임의 일부가 <strong>부분게임</strong>이 되려면:</p>
+    <p>(i) 시작 노드가 <strong>단일 정보집합(singleton)</strong>에 속해야 함<br>
+    (ii) 부분게임에 포함된 노드의 모든 후속 노드도 포함<br>
+    (iii) 정보집합에 속한 노드가 부분게임에 있으면, 같은 정보집합의 모든 노드도 포함</p>
+    <p>게임 자체도 자기 자신의 부분게임입니다. 나머지를 <strong>진부분게임(proper subgame)</strong>이라 합니다.</p>
+  </div>
+
+  <div class="concept-card definition">
+    <div class="card-label def">정의 — SPNE</div>
+    <p>전략 프로필이 <strong>부분게임 완전 내쉬균형(SPNE)</strong> ⟺ <strong>모든 부분게임</strong>에서 내쉬균형을 구성</p>
+    <div class="math-block">
+      $$\text{SPNE} \subseteq \text{NE}$$
+    </div>
+    <p>즉, SPNE는 NE의 <strong>정련(refinement)</strong>입니다. 비신뢰적인(not credible) 위협에 의존하는 NE를 제거합니다.</p>
+  </div>
+
+  <div class="concept-card example">
+    <div class="card-label ex">예시 — Putin-Trump 게임</div>
+    <div class="matrix-wrap">
+      <table class="game-matrix">
+        <tr><td class="player-label" colspan="2">Putin \ Trump</td><th>Fight</th><th>Not Fight</th></tr>
+        <tr><th>Invade</th><td>−2, −2</td><td class="ne-cell">+1, −1</td></tr>
+        <tr><th>Not Invade</th><td class="ne-cell">0, 0</td><td>0, 0</td></tr>
+      </table>
+    </div>
+    <p>순수전략 NE가 2개: (Invade, Not Fight)와 (Not Invade, Fight)</p>
+    <p>하지만 순차 게임(Putin이 먼저 이동)에서 보면, Trump의 "Fight" 위협은 <strong>신뢰할 수 없습니다(not credible)</strong>. Putin이 Invade한 후 Trump의 최선은 Not Fight(−1 > −2)이기 때문입니다.</p>
+    <p>따라서 SPNE는 <strong>(Invade, Not Fight)</strong>만 됩니다.</p>
+  </div>
+
+  <div class="concept-card example">
+    <div class="card-label ex">예시 — 다단계 게임의 SPNE 풀이</div>
+    <p>Player 1이 먼저 E(enter) 또는 X(exit) 선택. X이면 보수 (2,6). E이면 P1과 P2가 동시 게임:</p>
+    <div class="matrix-wrap">
+      <table class="game-matrix">
+        <tr><td class="player-label" colspan="2">P1 \ P2</td><th>L</th><th>R</th></tr>
+        <tr><th>T</th><td>0, 1</td><td class="ne-cell">3, 2</td></tr>
+        <tr><th>B</th><td>−1, 3</td><td>1, 5</td></tr>
+      </table>
+    </div>
+    <p><strong>부분게임 2</strong> (진입 후 동시 게임)의 NE: (T, R) — 보수 (3, 2)</p>
+    <p><strong>부분게임 1</strong> (전체 게임): P1은 E→(3,2) vs X→(2,6). P1은 3 > 2이므로 E 선택.</p>
+    <p>SPNE: <strong>(ET, R)</strong></p>
+  </div>
+</section>
+
+<!-- STACKELBERG -->
+<section class="chapter" id="stackelberg">
+  <div class="chapter-header">
+    <span class="chapter-num">19</span>
+    <span class="chapter-title">슈타켈버그 경쟁 (Stackelberg Competition)</span>
+  </div>
+
+  <p>쿠르노 모형과 동일하지만, 기업 1이 <strong>먼저</strong> 생산량을 결정하고, 기업 2가 이를 <strong>관찰한 후</strong> 생산량을 결정합니다.</p>
+
+  <h3>SPNE 풀이 (역진귀납)</h3>
+
+  <div class="step-box">
+    <div class="step-num">1</div>
+    <div class="step-content">
+      <p><strong>기업 2의 최적 대응 (2단계):</strong></p>
+      <div class="math-block">$$q^{BR}_2(q_1) = \frac{(a-c) - q_1}{2}$$</div>
+    </div>
+  </div>
+
+  <div class="step-box">
+    <div class="step-num">2</div>
+    <div class="step-content">
+      <p><strong>기업 1의 최적화 (1단계):</strong> \(q^{BR}_2\)를 대입하면</p>
+      <div class="math-block">$$\pi_1 = \left[\frac{a-c}{2} - \frac{1}{2}q_1\right]q_1$$</div>
+      <p>FOC → \(q^*_1 = \frac{a-c}{2}\)</p>
+    </div>
+  </div>
+
+  <div class="step-box">
+    <div class="step-num">3</div>
+    <div class="step-content">
+      <p><strong>기업 2의 균형 생산량:</strong></p>
+      <div class="math-block">$$q^*_2 = \frac{(a-c) - q^*_1}{2} = \frac{a-c}{4}$$</div>
+    </div>
+  </div>
+
+  <div class="concept-card insight">
+    <div class="card-label tip">쿠르노 vs 슈타켈버그 비교</div>
+    <div class="matrix-wrap">
+      <table class="game-matrix" style="font-family: 'Noto Sans KR', sans-serif; font-size: 0.85rem;">
+        <tr><th></th><th>쿠르노</th><th>슈타켈버그</th></tr>
+        <tr><td style="font-weight:700; color:var(--text)">기업 1 생산량</td><td>\(\frac{a-c}{3}\)</td><td>\(\frac{a-c}{2}\)</td></tr>
+        <tr><td style="font-weight:700; color:var(--text)">기업 2 생산량</td><td>\(\frac{a-c}{3}\)</td><td>\(\frac{a-c}{4}\)</td></tr>
+        <tr><td style="font-weight:700; color:var(--text)">총 생산량</td><td>\(\frac{2(a-c)}{3}\)</td><td>\(\frac{3(a-c)}{4}\)</td></tr>
+      </table>
+    </div>
+    <p>선도 기업(firm 1)은 쿠르노보다 생산을 <strong>늘리고</strong>, 추종 기업(firm 2)은 <strong>줄입니다</strong>. 이것이 <strong>선도자 우위(first-mover advantage)</strong>입니다.</p>
+  </div>
+</section>
+
+<!-- FORWARD INDUCTION -->
+<section class="chapter" id="forward">
+  <div class="chapter-header">
+    <span class="chapter-num">20</span>
+    <span class="chapter-title">전진귀납법과 SPNE의 한계</span>
+  </div>
+
+  <p>SPNE는 강력한 균형 개념이지만, 때로는 직관적으로 납득하기 어려운 균형도 포함할 수 있습니다.</p>
+
+  <div class="concept-card example">
+    <div class="card-label ex">예시 — 바깥 옵션이 있는 성별 전쟁</div>
+    <p>Putin이 Book(보수 2,2)을 선택하거나, Go out해서 Battle of the Sexes를 플레이할 수 있습니다.</p>
+    <div class="matrix-wrap">
+      <table class="game-matrix">
+        <tr><td class="player-label" colspan="2">BoS 부분게임</td><th>Bach</th><th>Stravinsky</th></tr>
+        <tr><th>Bach</th><td class="ne-cell">3, 1</td><td>0, 0</td></tr>
+        <tr><th>Stravinsky</th><td>0, 0</td><td class="ne-cell">1, 3</td></tr>
+      </table>
+    </div>
+    <p>SPNE가 2개: (Go-Bach, Bach)과 (Book-Strav, Stravinsky)</p>
+    <p>하지만 (Book-Strav, Stravinsky)는 설득력이 떨어집니다. Putin은 Book으로 확실히 2를 얻을 수 있는데, 왜 Go out해서 1(Stravinsky 균형에서의 보수)만 얻겠습니까? Trump이 BoS 부분게임에 도달했다면, Putin이 Bach를 선택했을 것이라고 <strong>추론</strong>해야 합니다.</p>
+    <p>이것이 <strong>전진귀납(forward induction)</strong>의 아이디어입니다: 과거 행동으로부터 상대의 의도를 추론합니다.</p>
+  </div>
+
+  <div class="concept-card insight">
+    <div class="card-label tip">역진귀납 vs 전진귀납</div>
+    <p><strong>역진귀납:</strong> "미래에 어떤 일이 일어날지"를 기반으로 현재를 결정<br>
+    <strong>전진귀납:</strong> "과거에 왜 그런 선택을 했는지"를 기반으로 상대의 의도를 추론<br><br>
+    전진귀납은 SPNE의 정련(refinement)을 위한 추가적인 도구로 활용됩니다.</p>
+  </div>
+</section>
+
+<!-- SUMMARY -->
+<section class="chapter" id="summary" style="margin-top: 4rem;">
+  <div class="chapter-header">
+    <span class="chapter-num">★</span>
+    <span class="chapter-title">핵심 개념 요약</span>
+  </div>
+
+  <div class="concept-card" style="border-left: 3px solid var(--orange);">
+    <div class="card-label" style="color: var(--orange);">시험 대비 체크리스트</div>
+    <p><strong>Lecture 1:</strong> 게임의 3요소, 협조적 vs 비협조적, 전략형 vs 전개형</p>
+    <p><strong>Lecture 2:</strong></p>
+    <p style="padding-left:1rem">
+    ✓ 전략형 게임 정의와 표기법 (\(S_{-i}\), \((s'_i, s_{-i})\) 등)<br>
+    ✓ 혼합전략과 기대보수 계산<br>
+    ✓ 엄격 지배 / 약한 지배 (혼합전략에 의한 지배 포함)<br>
+    ✓ IDSDS vs IDWDS (순서 의존성!)<br>
+    ✓ 내쉬균형 정의 & 최적대응<br>
+    ✓ MSNE 풀이법 (무차별 조건 활용)<br>
+    ✓ THPE 정의와 검증<br>
+    ✓ 응용: 쿠르노, 베르트랑, 호텔링, 중위투표자 정리
+    </p>
+    <p><strong>Lecture 3:</strong></p>
+    <p style="padding-left:1rem">
+    ✓ 전개형 게임 구성요소 (트리, 정보집합, 전략)<br>
+    ✓ 행동(action) vs 전략(strategy) 구분 — <strong>시험 단골!</strong><br>
+    ✓ 역진귀납법 & 순차적 합리성<br>
+    ✓ 부분게임 정의 (3가지 조건)<br>
+    ✓ SPNE 정의와 풀이<br>
+    ✓ 슈타켈버그 경쟁 (쿠르노와 비교)<br>
+    ✓ 전진귀납법 개념
+    </p>
+  </div>
+
+  <div class="concept-card insight" style="margin-top:1.5rem;">
+    <div class="card-label tip">균형 개념의 관계</div>
+    <div class="math-block">
+      $$\text{THPE} \subseteq \text{SPNE} \subseteq \text{NE} \subseteq \text{IDSDS 생존 전략}$$
+    </div>
+    <p>왼쪽으로 갈수록 더 강한(restrictive) 균형 개념입니다.</p>
+  </div>
+</section>
+
+</main>
+
+<script>
+function toggleSection(header) {
+  header.classList.toggle('open');
+  const body = header.nextElementSibling;
+  body.classList.toggle('show');
+}
+
+// Smooth scroll for nav links
+document.querySelectorAll('.nav-item').forEach(link => {
+  link.addEventListener('click', (e) => {
+    e.preventDefault();
+    const target = document.querySelector(link.getAttribute('href'));
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+    // Close mobile nav
+    document.querySelector('.side-nav').classList.remove('open');
+    // Update active state
+    document.querySelectorAll('.nav-item').forEach(l => l.classList.remove('active'));
+    link.classList.add('active');
+  });
+});
+
+// Highlight active nav on scroll
+const chapters = document.querySelectorAll('.chapter, .hero');
+const navItems = document.querySelectorAll('.nav-item');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const id = entry.target.id;
+      navItems.forEach(item => {
+        item.classList.toggle('active', item.getAttribute('href') === '#' + id);
+      });
+    }
+  });
+}, { rootMargin: '-20% 0px -60% 0px' });
+chapters.forEach(ch => { if (ch.id) observer.observe(ch); });
+
+// Render KaTeX
+document.addEventListener('DOMContentLoaded', function() {
+  renderMathInElement(document.body, {
+    delimiters: [
+      {left: '$$', right: '$$', display: true},
+      {left: '\\(', right: '\\)', display: false},
+      {left: '\\[', right: '\\]', display: true}
+    ],
+    throwOnError: false
+  });
+});
+</script>
+
+</body>
+</html>
