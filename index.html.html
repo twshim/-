@@ -1,0 +1,1245 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>게임이론 | Normal Form vs Extensive Form</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&family=IBM+Plex+Mono:wght@400;600&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d1117;
+    --surface: #161b22;
+    --surface2: #1c2333;
+    --border: #30363d;
+    --accent: #e6b450;
+    --accent2: #58a6ff;
+    --accent3: #7ee787;
+    --accent4: #f78166;
+    --text: #e6edf3;
+    --text-muted: #8b949e;
+    --text-dim: #484f58;
+    --serif: 'Noto Serif KR', serif;
+    --sans: 'Noto Sans KR', sans-serif;
+    --mono: 'IBM Plex Mono', monospace;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 15px;
+    line-height: 1.8;
+    min-height: 100vh;
+  }
+
+  /* ── Header ── */
+  header {
+    position: relative;
+    overflow: hidden;
+    padding: 80px 40px 60px;
+    background: linear-gradient(135deg, #0d1117 0%, #161b22 50%, #0d1117 100%);
+    border-bottom: 1px solid var(--border);
+  }
+
+  header::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 10% 50%, rgba(230,180,80,0.08) 0%, transparent 70%),
+      radial-gradient(ellipse 50% 60% at 90% 30%, rgba(88,166,255,0.06) 0%, transparent 70%);
+  }
+
+  .header-inner {
+    position: relative;
+    max-width: 920px;
+    margin: 0 auto;
+  }
+
+  .header-tag {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    color: var(--accent);
+    background: rgba(230,180,80,0.1);
+    border: 1px solid rgba(230,180,80,0.25);
+    padding: 4px 12px;
+    border-radius: 2px;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+  }
+
+  header h1 {
+    font-family: var(--serif);
+    font-size: clamp(26px, 4vw, 40px);
+    font-weight: 700;
+    line-height: 1.3;
+    color: var(--text);
+    margin-bottom: 12px;
+  }
+
+  header h1 span {
+    color: var(--accent);
+  }
+
+  .header-sub {
+    font-size: 14px;
+    color: var(--text-muted);
+    font-family: var(--mono);
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-top: 20px;
+  }
+
+  .header-sub span::before {
+    content: '▸ ';
+    color: var(--accent3);
+  }
+
+  /* ── TOC ── */
+  .toc-wrapper {
+    max-width: 920px;
+    margin: 40px auto;
+    padding: 0 40px;
+  }
+
+  .toc {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: 4px;
+    padding: 24px 28px;
+  }
+
+  .toc-title {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+
+  .toc ol {
+    list-style: none;
+    counter-reset: toc;
+  }
+
+  .toc ol li {
+    counter-increment: toc;
+    padding: 4px 0;
+  }
+
+  .toc ol li::before {
+    content: '0' counter(toc) '. ';
+    font-family: var(--mono);
+    color: var(--text-dim);
+    font-size: 13px;
+  }
+
+  .toc a {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 14px;
+    transition: color 0.2s;
+  }
+
+  .toc a:hover { color: var(--accent2); }
+
+  /* ── Main Layout ── */
+  main {
+    max-width: 920px;
+    margin: 0 auto;
+    padding: 0 40px 100px;
+  }
+
+  /* ── Section ── */
+  .section {
+    margin-bottom: 60px;
+    animation: fadeIn 0.4s ease forwards;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 28px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-num {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--accent);
+    background: rgba(230,180,80,0.1);
+    border: 1px solid rgba(230,180,80,0.2);
+    padding: 3px 8px;
+    border-radius: 2px;
+  }
+
+  .section-header h2 {
+    font-family: var(--serif);
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  /* ── Prose ── */
+  .prose p {
+    margin-bottom: 16px;
+    color: var(--text);
+    font-size: 15px;
+    line-height: 1.85;
+  }
+
+  .prose strong {
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  .em-blue { color: var(--accent2); font-weight: 500; }
+  .em-green { color: var(--accent3); font-weight: 500; }
+  .em-red { color: var(--accent4); font-weight: 500; }
+
+  /* ── Professor Quote ── */
+  .prof-quote {
+    position: relative;
+    background: var(--surface2);
+    border-left: 3px solid var(--accent2);
+    border-radius: 0 6px 6px 0;
+    padding: 18px 22px 18px 26px;
+    margin: 20px 0;
+  }
+
+  .prof-quote::before {
+    content: '🎙 교수님 강의';
+    display: block;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent2);
+    letter-spacing: 0.08em;
+    margin-bottom: 8px;
+  }
+
+  .prof-quote p {
+    color: #c4cdd6;
+    font-size: 14px;
+    font-style: italic;
+    line-height: 1.75;
+    margin: 0;
+  }
+
+  /* ── Definition Box ── */
+  .def-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-top: 3px solid var(--accent3);
+    border-radius: 4px;
+    padding: 22px 26px;
+    margin: 22px 0;
+  }
+
+  .def-box-title {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    color: var(--accent3);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  .def-box p {
+    color: var(--text);
+    font-size: 14.5px;
+    line-height: 1.8;
+    margin: 0;
+  }
+
+  /* ── Key Point ── */
+  .key-point {
+    background: rgba(230,180,80,0.06);
+    border: 1px solid rgba(230,180,80,0.2);
+    border-radius: 6px;
+    padding: 18px 22px;
+    margin: 22px 0;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+
+  .key-icon {
+    font-size: 20px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .key-point p {
+    color: #d4bf95;
+    font-size: 14.5px;
+    line-height: 1.8;
+    margin: 0;
+  }
+
+  /* ── Comparison Table ── */
+  .compare-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin: 28px 0;
+  }
+
+  .compare-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+
+  .compare-card-header {
+    padding: 14px 18px;
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+
+  .compare-card.normal .compare-card-header {
+    background: rgba(88,166,255,0.1);
+    color: var(--accent2);
+    border-bottom: 1px solid rgba(88,166,255,0.2);
+  }
+
+  .compare-card.extensive .compare-card-header {
+    background: rgba(230,180,80,0.1);
+    color: var(--accent);
+    border-bottom: 1px solid rgba(230,180,80,0.2);
+  }
+
+  .compare-card ul {
+    list-style: none;
+    padding: 16px 18px;
+  }
+
+  .compare-card ul li {
+    padding: 7px 0;
+    font-size: 14px;
+    color: var(--text);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+  }
+
+  .compare-card ul li:last-child { border-bottom: none; }
+
+  .compare-card ul li::before {
+    content: '–';
+    color: var(--text-dim);
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  /* ── Summary Table ── */
+  .table-wrap {
+    overflow-x: auto;
+    margin: 24px 0;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+
+  thead tr {
+    background: var(--surface2);
+  }
+
+  thead th {
+    padding: 12px 18px;
+    text-align: left;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--border);
+  }
+
+  tbody tr {
+    border-bottom: 1px solid var(--border);
+    transition: background 0.15s;
+  }
+
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: var(--surface); }
+
+  tbody td {
+    padding: 12px 18px;
+    color: var(--text);
+    vertical-align: top;
+    line-height: 1.7;
+  }
+
+  tbody td:first-child {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--text-muted);
+    white-space: nowrap;
+  }
+
+  .tag-normal {
+    display: inline-block;
+    background: rgba(88,166,255,0.12);
+    color: var(--accent2);
+    border: 1px solid rgba(88,166,255,0.25);
+    border-radius: 2px;
+    font-family: var(--mono);
+    font-size: 10px;
+    padding: 1px 6px;
+    letter-spacing: 0.05em;
+  }
+
+  .tag-ext {
+    display: inline-block;
+    background: rgba(230,180,80,0.12);
+    color: var(--accent);
+    border: 1px solid rgba(230,180,80,0.25);
+    border-radius: 2px;
+    font-family: var(--mono);
+    font-size: 10px;
+    padding: 1px 6px;
+    letter-spacing: 0.05em;
+  }
+
+  /* ── Game Tree SVG ── */
+  .diagram-wrap {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 30px 20px;
+    margin: 24px 0;
+    text-align: center;
+    overflow-x: auto;
+  }
+
+  .diagram-caption {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 14px;
+    letter-spacing: 0.05em;
+  }
+
+  /* ── Matrix ── */
+  .matrix-wrap {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+  }
+
+  .matrix-table {
+    border-collapse: collapse;
+    font-size: 14px;
+    font-family: var(--mono);
+  }
+
+  .matrix-table th, .matrix-table td {
+    width: 100px;
+    height: 52px;
+    text-align: center;
+    vertical-align: middle;
+    border: 1px solid var(--border);
+    padding: 8px;
+  }
+
+  .matrix-table th {
+    background: var(--surface2);
+    color: var(--text-muted);
+    font-size: 12px;
+    letter-spacing: 0.06em;
+  }
+
+  .matrix-table .row-label {
+    background: var(--surface2);
+    color: var(--text-muted);
+    font-size: 12px;
+    text-align: right;
+    padding-right: 14px;
+    border: 1px solid var(--border);
+  }
+
+  .matrix-table .payoff {
+    background: var(--surface);
+    color: var(--text);
+    font-size: 13px;
+  }
+
+  .payoff-neg { color: var(--accent4); }
+  .payoff-pos { color: var(--accent3); }
+
+  .player-label {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text-muted);
+    text-align: center;
+    margin-bottom: 8px;
+  }
+
+  /* ── Info Set Explanation ── */
+  .info-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 14px;
+    margin: 22px 0;
+  }
+
+  .info-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 18px;
+  }
+
+  .info-card-icon {
+    font-size: 22px;
+    margin-bottom: 10px;
+  }
+
+  .info-card h4 {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+
+  .info-card p {
+    font-size: 13.5px;
+    color: var(--text-muted);
+    line-height: 1.7;
+    margin: 0;
+  }
+
+  /* ── Relationship Box ── */
+  .relation-box {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 24px 28px;
+    margin: 28px 0;
+  }
+
+  .relation-box h3 {
+    font-family: var(--serif);
+    font-size: 17px;
+    color: var(--text);
+    margin-bottom: 16px;
+  }
+
+  .relation-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .relation-item:last-child { border-bottom: none; }
+
+  .relation-arrow {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--accent3);
+    flex-shrink: 0;
+    margin-top: 3px;
+  }
+
+  .relation-item p {
+    font-size: 14px;
+    color: var(--text);
+    line-height: 1.7;
+    margin: 0;
+  }
+
+  /* ── Example Block ── */
+  .example-block {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    margin: 24px 0;
+    overflow: hidden;
+  }
+
+  .example-block-header {
+    background: var(--surface2);
+    padding: 10px 18px;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .example-block-header::before {
+    content: '예제';
+    background: var(--accent);
+    color: var(--bg);
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 2px;
+    letter-spacing: 0.05em;
+  }
+
+  .example-block-body {
+    padding: 20px 22px;
+  }
+
+  .example-block-body p {
+    font-size: 14.5px;
+    color: var(--text);
+    line-height: 1.8;
+    margin-bottom: 12px;
+  }
+
+  .example-block-body p:last-child { margin-bottom: 0; }
+
+  /* ── Footer ── */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 30px 40px;
+    text-align: center;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text-dim);
+    letter-spacing: 0.06em;
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 640px) {
+    header { padding: 50px 20px 40px; }
+    .toc-wrapper, main { padding: 0 20px; }
+    .compare-grid { grid-template-columns: 1fr; }
+    footer { padding: 30px 20px; }
+  }
+
+  /* ── Scroll indicator ── */
+  .progress-bar {
+    position: fixed;
+    top: 0; left: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    width: 0%;
+    z-index: 999;
+    transition: width 0.1s;
+  }
+</style>
+</head>
+<body>
+
+<div class="progress-bar" id="progress"></div>
+
+<!-- ════════ HEADER ════════ -->
+<header>
+  <div class="header-inner">
+    <div class="header-tag">ECO5031 · Lecture Note 3 · Game Theory</div>
+    <h1>Normal Form Game vs.<br><span>Extensive Form Game</span></h1>
+    <div class="header-sub">
+      <span>성균관대학교 경제학과</span>
+      <span>이희영 교수 강의 기반</span>
+      <span>2026 Spring</span>
+    </div>
+  </div>
+</header>
+
+<!-- ════════ TOC ════════ -->
+<div class="toc-wrapper">
+  <div class="toc">
+    <div class="toc-title">📋 목차</div>
+    <ol>
+      <li><a href="#s1">왜 Extensive Form이 필요한가?</a></li>
+      <li><a href="#s2">Normal Form Game 복습</a></li>
+      <li><a href="#s3">Extensive Form Game 기본 구조</a></li>
+      <li><a href="#s4">핵심 개념: Information Set</a></li>
+      <li><a href="#s5">Action vs. Strategy — 가장 중요한 구분</a></li>
+      <li><a href="#s6">두 게임의 관계: 변환과 한계</a></li>
+      <li><a href="#s7">한눈에 보는 비교표</a></li>
+    </ol>
+  </div>
+</div>
+
+<!-- ════════ MAIN ════════ -->
+<main>
+
+  <!-- ── SECTION 1 ── -->
+  <section class="section" id="s1">
+    <div class="section-header">
+      <span class="section-num">01</span>
+      <h2>왜 Extensive Form이 필요한가?</h2>
+    </div>
+
+    <div class="prose">
+      <p>
+        우리가 앞서 배운 <strong>Normal Form Game(전략형 게임)</strong>은 플레이어들이 동시에 전략을 선택하거나, 설령 순서가 있더라도 서로의 행동을 볼 수 없다는 가정 위에 세워져 있어요. 쉽게 말해, <span class="em-blue">매트릭스(표) 하나로 모든 것을 표현</span>하는 방식입니다.
+      </p>
+      <p>
+        그런데 현실의 수많은 전략적 상황은 그렇지 않죠. <strong>순서(sequence)가 있고, 상대방의 행동이 내 눈에 보이는 경우</strong>가 훨씬 많습니다.
+      </p>
+    </div>
+
+    <div class="prof-quote">
+      <p>
+        "많은 게임들이 사실 순서가 동반됩니다. 바둑 같은 경우는 내가 두고, 그다음에 상대방이 두고, 상대방이 내가 둔 수를 보고 다음 수를 두지… 이런 것들이 실제로 그 상황에서 전략적으로 사람들이 어떻게 행동하고 균형이 어떻게 나오는지 보려면, 그 상황에 맞게 게임의 틀을 만들어야 되는 거잖아요. 지금 갖고 있는 Normal Form 게임만으로는 정확하게 그걸 구성하는 것이 쉽지 않습니다."
+      </p>
+    </div>
+
+    <div class="prose">
+      <p>
+        대표적인 예시가 <strong>Stackelberg Duopoly(스타켈버그 복점)</strong>입니다. Cournot 모형에서는 두 기업이 동시에 생산량을 결정하지만, Stackelberg 모형에서는 기업 1이 먼저 생산량 q₁을 결정하고, 기업 2가 <em>그것을 관찰한 후</em> q₂를 결정합니다.
+      </p>
+      <p>
+        이런 상황에서는 기업 2의 전략이 "기업 1이 q₁을 얼마 생산했느냐"에 따라 달라지는 <strong>조건부 계획(contingent plan)</strong>이 됩니다. 매트릭스로는 이 "관찰 후 반응"이라는 구조를 담을 수 없어요.
+      </p>
+    </div>
+
+    <div class="key-point">
+      <span class="key-icon">💡</span>
+      <p>
+        <strong>한 줄 요약:</strong> Normal Form은 "동시 선택" 또는 "서로 관찰 불가"한 상황에 적합하고, <strong>Extensive Form은 "순서가 있고, 이전 행동을 관찰 가능한" 상황</strong>을 표현하기 위해 필요합니다. 현실의 대부분 전략적 상황은 Extensive Form으로 더 정확하게 묘사됩니다.
+      </p>
+    </div>
+  </section>
+
+  <!-- ── SECTION 2 ── -->
+  <section class="section" id="s2">
+    <div class="section-header">
+      <span class="section-num">02</span>
+      <h2>Normal Form Game 복습</h2>
+    </div>
+
+    <div class="def-box">
+      <div class="def-box-title">정의 — Normal Form Game (전략형 게임)</div>
+      <p>
+        플레이어 집합 <em>N</em>, 각 플레이어 <em>i</em>의 전략 공간 <em>Sᵢ</em>, 보수 함수 <em>uᵢ : S → ℝ</em>의 세 가지 요소로 구성됩니다. 핵심은 모든 플레이어가 <strong>동시에(또는 독립적으로)</strong> 전략을 선택한다는 가정입니다.
+      </p>
+    </div>
+
+    <div class="prose">
+      <p>가장 단순한 예시로, 동전 맞추기(Matching Pennies)를 Normal Form으로 표현하면 아래와 같습니다.</p>
+    </div>
+
+    <div class="diagram-wrap">
+      <div class="player-label">Player 2 (Bob)</div>
+      <div class="matrix-wrap">
+        <table class="matrix-table">
+          <thead>
+            <tr>
+              <th style="border:none; background:transparent;"></th>
+              <th>H (앞면)</th>
+              <th>T (뒷면)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="row-label">H (앞면)</td>
+              <td class="payoff"><span class="payoff-neg">−1</span>, <span class="payoff-pos">+1</span></td>
+              <td class="payoff"><span class="payoff-pos">+1</span>, <span class="payoff-neg">−1</span></td>
+            </tr>
+            <tr>
+              <td class="row-label">T (뒷면)</td>
+              <td class="payoff"><span class="payoff-pos">+1</span>, <span class="payoff-neg">−1</span></td>
+              <td class="payoff"><span class="payoff-neg">−1</span>, <span class="payoff-pos">+1</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="diagram-caption">Matching Pennies — Normal Form Matrix (보수: Anne, Bob 순)</div>
+    </div>
+
+    <div class="prose">
+      <p>이 표는 두 플레이어가 <strong>동시에, 그리고 서로의 선택을 모르는 상태</strong>에서 결정한다고 가정합니다. 그런데 만약 Bob이 먼저 선택하고, Anne이 Bob의 선택을 본 뒤 결정한다면? 이 매트릭스는 그 상황을 정확하게 담지 못합니다.</p>
+    </div>
+  </section>
+
+  <!-- ── SECTION 3 ── -->
+  <section class="section" id="s3">
+    <div class="section-header">
+      <span class="section-num">03</span>
+      <h2>Extensive Form Game 기본 구조</h2>
+    </div>
+
+    <div class="def-box">
+      <div class="def-box-title">정의 — Extensive Form Game (전개형 게임)</div>
+      <p>
+        다음 5가지 요소로 구성됩니다:<br>
+        ① <strong>플레이어 집합</strong> (Players),&nbsp;
+        ② <strong>게임 트리</strong> (Tree: 노드 + 가지),&nbsp;
+        ③ <strong>각 비단말 노드에 플레이어 배정</strong>,&nbsp;
+        ④ <strong>정보 분할</strong> (Information Partition),&nbsp;
+        ⑤ <strong>각 단말 노드에서의 보수</strong> (Payoff)
+      </p>
+    </div>
+
+    <div class="prose">
+      <p>Extensive Form은 <strong>게임 트리(game tree)</strong>라는 그림으로 표현됩니다. 마치 플로우차트처럼, 시간 순서에 따라 의사결정이 가지처럼 뻗어나가는 형태입니다.</p>
+    </div>
+
+    <div class="prof-quote">
+      <p>"이 게임 트리라는 건 반드시 시작점(initial node)이 있어요. 거기서 뻥 터지면서 이렇게 시작되는 거야. 그리고 내가 어디서 왔는지는 딱 한 경로밖에 없어요. 두 군데에서 동시에 오는 건 없습니다."</p>
+    </div>
+
+    <!-- Game Tree SVG -->
+    <div class="diagram-wrap">
+      <svg viewBox="0 0 580 360" width="100%" style="max-width:580px; font-family: var(--mono);">
+        <!-- edges -->
+        <!-- Root to Player1-left -->
+        <line x1="290" y1="50" x2="150" y2="145" stroke="#30363d" stroke-width="1.5"/>
+        <!-- Root to Player1-right -->
+        <line x1="290" y1="50" x2="430" y2="145" stroke="#30363d" stroke-width="1.5"/>
+        <!-- P1-left to leaves -->
+        <line x1="150" y1="165" x2="80"  y2="265" stroke="#30363d" stroke-width="1.5"/>
+        <line x1="150" y1="165" x2="165" y2="265" stroke="#30363d" stroke-width="1.5"/>
+        <!-- P1-right to leaves -->
+        <line x1="430" y1="165" x2="415" y2="265" stroke="#30363d" stroke-width="1.5"/>
+        <line x1="430" y1="165" x2="500" y2="265" stroke="#30363d" stroke-width="1.5"/>
+
+        <!-- Root node (Player 0 / nature or Player 1 initial) -->
+        <circle cx="290" cy="50" r="12" fill="#1c2333" stroke="#e6b450" stroke-width="2"/>
+        <text x="290" y="30" text-anchor="middle" fill="#e6b450" font-size="11">Player 1</text>
+        <text x="290" y="55" text-anchor="middle" fill="#e6b450" font-size="10">P1</text>
+
+        <!-- Branch labels -->
+        <text x="210" y="100" text-anchor="middle" fill="#8b949e" font-size="12">L</text>
+        <text x="370" y="100" text-anchor="middle" fill="#8b949e" font-size="12">R</text>
+
+        <!-- Player 2 nodes -->
+        <circle cx="150" cy="155" r="10" fill="#1c2333" stroke="#58a6ff" stroke-width="2"/>
+        <text x="128" y="152" text-anchor="end" fill="#58a6ff" font-size="11">Player 2</text>
+        <circle cx="430" cy="155" r="10" fill="#1c2333" stroke="#58a6ff" stroke-width="2"/>
+        <text x="454" y="152" text-anchor="start" fill="#58a6ff" font-size="11">Player 2</text>
+
+        <!-- Action labels from P2 nodes -->
+        <text x="105" y="222" text-anchor="middle" fill="#8b949e" font-size="11">m</text>
+        <text x="168" y="222" text-anchor="middle" fill="#8b949e" font-size="11">n</text>
+        <text x="412" y="222" text-anchor="middle" fill="#8b949e" font-size="11">s</text>
+        <text x="475" y="222" text-anchor="middle" fill="#8b949e" font-size="11">t</text>
+
+        <!-- Terminal nodes -->
+        <rect x="50"  y="265" width="56" height="36" rx="3" fill="#161b22" stroke="#30363d"/>
+        <text x="78"  y="280" text-anchor="middle" fill="#7ee787" font-size="11">1, 0</text>
+
+        <rect x="134" y="265" width="56" height="36" rx="3" fill="#161b22" stroke="#30363d"/>
+        <text x="162" y="280" text-anchor="middle" fill="#7ee787" font-size="11">2, 3</text>
+
+        <rect x="383" y="265" width="56" height="36" rx="3" fill="#161b22" stroke="#30363d"/>
+        <text x="411" y="280" text-anchor="middle" fill="#7ee787" font-size="11">0, 1</text>
+
+        <rect x="468" y="265" width="56" height="36" rx="3" fill="#161b22" stroke="#30363d"/>
+        <text x="496" y="280" text-anchor="middle" fill="#7ee787" font-size="11">-1, 0</text>
+
+        <!-- Payoff label -->
+        <text x="290" y="320" text-anchor="middle" fill="#484f58" font-size="11">단말 노드 보수: (Player1, Player2)</text>
+
+        <!-- Perfect info label -->
+        <text x="290" y="345" text-anchor="middle" fill="#484f58" font-size="10">※ 각 Player 2 노드가 별개 → Perfect Information</text>
+      </svg>
+      <div class="diagram-caption">Extensive Form Game Tree 예시 — 완전 정보(Perfect Information) 버전</div>
+    </div>
+
+    <div class="prose">
+      <p>게임 트리의 핵심 용어를 정리하면:</p>
+    </div>
+
+    <div class="info-cards">
+      <div class="info-card">
+        <div class="info-card-icon">🌳</div>
+        <h4>Initial Node (초기 노드)</h4>
+        <p>게임의 시작점. 오직 하나만 존재하며, 여기서 모든 분기가 시작됩니다.</p>
+      </div>
+      <div class="info-card">
+        <div class="info-card-icon">🔵</div>
+        <h4>Non-terminal Node</h4>
+        <p>게임이 진행 중인 노드. 어떤 플레이어가 행동을 선택해야 하는 지점입니다.</p>
+      </div>
+      <div class="info-card">
+        <div class="info-card-icon">🟩</div>
+        <h4>Terminal Node (단말 노드)</h4>
+        <p>게임이 끝나는 지점. 각 플레이어의 보수(payoff)가 확정됩니다.</p>
+      </div>
+      <div class="info-card">
+        <div class="info-card-icon">🌿</div>
+        <h4>Branch (가지)</h4>
+        <p>노드와 노드를 잇는 선. 각 가지는 플레이어의 하나의 행동(action)을 나타냅니다.</p>
+      </div>
+    </div>
+
+    <div class="key-point">
+      <span class="key-icon">📌</span>
+      <p>게임 트리에서 <strong>어떤 노드에 도달하는 경로는 단 하나</strong>입니다. 두 개의 서로 다른 경로가 같은 노드에 합쳐지는 구조(사이클)는 존재하지 않습니다. 이것이 트리(tree)의 정의입니다.</p>
+    </div>
+  </section>
+
+  <!-- ── SECTION 4 ── -->
+  <section class="section" id="s4">
+    <div class="section-header">
+      <span class="section-num">04</span>
+      <h2>핵심 개념: Information Set (정보 집합)</h2>
+    </div>
+
+    <div class="prose">
+      <p>
+        Extensive Form의 가장 핵심이자 가장 어려운 개념이 바로 <strong>Information Set(정보 집합)</strong>입니다. 이것을 제대로 이해해야 Normal Form과 Extensive Form의 차이를 완전히 파악할 수 있어요.
+      </p>
+    </div>
+
+    <div class="def-box">
+      <div class="def-box-title">정의 — Information Set (정보 집합)</div>
+      <p>
+        다음 두 조건을 만족하는 노드들의 집합입니다:<br>
+        ① <strong>같은 플레이어가 행동을 선택</strong>해야 하는 노드들이어야 합니다.<br>
+        ② <strong>각 노드에서 선택 가능한 행동(action)의 집합이 동일</strong>해야 합니다.<br><br>
+        플레이어는 자신이 이 집합 내 어느 노드에 있는지 <strong>정확히 알 수 없습니다</strong>. 도식에서는 점선이나 타원으로 묶어서 표시합니다.
+      </p>
+    </div>
+
+    <!-- Information Set Diagram -->
+    <div class="diagram-wrap">
+      <svg viewBox="0 0 640 400" width="100%" style="max-width:640px; font-family:var(--mono);">
+
+        <!-- LEFT: Perfect Information -->
+        <text x="160" y="22" text-anchor="middle" fill="#7ee787" font-size="12" font-weight="600">✓ Perfect Information</text>
+        <text x="160" y="38" text-anchor="middle" fill="#484f58" font-size="10">(각 노드 = 별개 정보집합)</text>
+
+        <!-- Tree edges -->
+        <line x1="160" y1="65" x2="80"  y2="155" stroke="#30363d" stroke-width="1.5"/>
+        <line x1="160" y1="65" x2="240" y2="155" stroke="#30363d" stroke-width="1.5"/>
+        <line x1="80"  y1="170" x2="44"  y2="255" stroke="#30363d" stroke-width="1.2"/>
+        <line x1="80"  y1="170" x2="116" y2="255" stroke="#30363d" stroke-width="1.2"/>
+        <line x1="240" y1="170" x2="204" y2="255" stroke="#30363d" stroke-width="1.2"/>
+        <line x1="240" y1="170" x2="276" y2="255" stroke="#30363d" stroke-width="1.2"/>
+
+        <!-- P1 node -->
+        <circle cx="160" cy="60" r="10" fill="#1c2333" stroke="#e6b450" stroke-width="2"/>
+        <text x="160" y="64" text-anchor="middle" fill="#e6b450" font-size="9">P1</text>
+        <text x="125" y="110" fill="#8b949e" font-size="11">T</text>
+        <text x="193" y="110" fill="#8b949e" font-size="11">H</text>
+
+        <!-- P2 nodes — SEPARATE (perfect info) -->
+        <circle cx="80"  cy="162" r="9" fill="#1c2333" stroke="#58a6ff" stroke-width="2"/>
+        <text x="80"  y="166" text-anchor="middle" fill="#58a6ff" font-size="9">P2</text>
+        <circle cx="240" cy="162" r="9" fill="#1c2333" stroke="#58a6ff" stroke-width="2"/>
+        <text x="240" y="166" text-anchor="middle" fill="#58a6ff" font-size="9">P2</text>
+
+        <!-- Action labels -->
+        <text x="55"  y="215" fill="#8b949e" font-size="10">T</text>
+        <text x="103" y="215" fill="#8b949e" font-size="10">H</text>
+        <text x="215" y="215" fill="#8b949e" font-size="10">T</text>
+        <text x="263" y="215" fill="#8b949e" font-size="10">H</text>
+
+        <!-- Terminal nodes -->
+        <rect x="27"  y="255" width="34" height="26" rx="2" fill="#161b22" stroke="#30363d"/>
+        <text x="44"  y="272" text-anchor="middle" fill="#7ee787" font-size="9">-1,+1</text>
+        <rect x="99"  y="255" width="34" height="26" rx="2" fill="#161b22" stroke="#30363d"/>
+        <text x="116" y="272" text-anchor="middle" fill="#7ee787" font-size="9">+1,-1</text>
+        <rect x="187" y="255" width="34" height="26" rx="2" fill="#161b22" stroke="#30363d"/>
+        <text x="204" y="272" text-anchor="middle" fill="#7ee787" font-size="9">+1,-1</text>
+        <rect x="259" y="255" width="34" height="26" rx="2" fill="#161b22" stroke="#30363d"/>
+        <text x="276" y="272" text-anchor="middle" fill="#7ee787" font-size="9">-1,+1</text>
+
+        <!-- Strategy count label -->
+        <text x="160" y="316" text-anchor="middle" fill="#484f58" font-size="10">P2 전략 수: 2 × 2 = 4가지</text>
+        <text x="160" y="330" text-anchor="middle" fill="#58a6ff" font-size="10">{TT, TH, HT, HH}</text>
+
+        <!-- DIVIDER -->
+        <line x1="330" y1="10" x2="330" y2="360" stroke="#30363d" stroke-width="1" stroke-dasharray="4,4"/>
+
+        <!-- RIGHT: Imperfect Information -->
+        <text x="490" y="22" text-anchor="middle" fill="#f78166" font-size="12" font-weight="600">✗ Imperfect Information</text>
+        <text x="490" y="38" text-anchor="middle" fill="#484f58" font-size="10">(두 노드 = 하나의 정보집합)</text>
+
+        <!-- Tree edges right -->
+        <line x1="490" y1="65" x2="410" y2="155" stroke="#30363d" stroke-width="1.5"/>
+        <line x1="490" y1="65" x2="570" y2="155" stroke="#30363d" stroke-width="1.5"/>
+        <line x1="410" y1="170" x2="374" y2="255" stroke="#30363d" stroke-width="1.2"/>
+        <line x1="410" y1="170" x2="446" y2="255" stroke="#30363d" stroke-width="1.2"/>
+        <line x1="570" y1="170" x2="534" y2="255" stroke="#30363d" stroke-width="1.2"/>
+        <line x1="570" y1="170" x2="606" y2="255" stroke="#30363d" stroke-width="1.2"/>
+
+        <!-- P1 node right -->
+        <circle cx="490" cy="60" r="10" fill="#1c2333" stroke="#e6b450" stroke-width="2"/>
+        <text x="490" y="64" text-anchor="middle" fill="#e6b450" font-size="9">P1</text>
+        <text x="455" y="110" fill="#8b949e" font-size="11">T</text>
+        <text x="523" y="110" fill="#8b949e" font-size="11">H</text>
+
+        <!-- P2 nodes CONNECTED (imperfect info) -->
+        <circle cx="410" cy="162" r="9" fill="#1c2333" stroke="#f78166" stroke-width="2"/>
+        <text x="410" y="166" text-anchor="middle" fill="#f78166" font-size="9">P2</text>
+        <circle cx="570" cy="162" r="9" fill="#1c2333" stroke="#f78166" stroke-width="2"/>
+        <text x="570" y="166" text-anchor="middle" fill="#f78166" font-size="9">P2</text>
+
+        <!-- Information set connector (dashed oval) -->
+        <ellipse cx="490" cy="162" rx="90" ry="22" fill="none" stroke="#f78166" stroke-width="1.5" stroke-dasharray="5,3" opacity="0.7"/>
+        <text x="490" y="196" text-anchor="middle" fill="#f78166" font-size="9">같은 정보집합</text>
+
+        <!-- Action labels right -->
+        <text x="385" y="215" fill="#8b949e" font-size="10">T</text>
+        <text x="433" y="215" fill="#8b949e" font-size="10">H</text>
+        <text x="545" y="215" fill="#8b949e" font-size="10">T</text>
+        <text x="593" y="215" fill="#8b949e" font-size="10">H</text>
+
+        <!-- Terminal nodes right -->
+        <rect x="357" y="255" width="34" height="26" rx="2" fill="#161b22" stroke="#30363d"/>
+        <text x="374" y="272" text-anchor="middle" fill="#7ee787" font-size="9">-1,+1</text>
+        <rect x="429" y="255" width="34" height="26" rx="2" fill="#161b22" stroke="#30363d"/>
+        <text x="446" y="272" text-anchor="middle" fill="#7ee787" font-size="9">+1,-1</text>
+        <rect x="517" y="255" width="34" height="26" rx="2" fill="#161b22" stroke="#30363d"/>
+        <text x="534" y="272" text-anchor="middle" fill="#7ee787" font-size="9">+1,-1</text>
+        <rect x="589" y="255" width="34" height="26" rx="2" fill="#161b22" stroke="#30363d"/>
+        <text x="606" y="272" text-anchor="middle" fill="#7ee787" font-size="9">-1,+1</text>
+
+        <!-- Strategy count label right -->
+        <text x="490" y="316" text-anchor="middle" fill="#484f58" font-size="10">P2 전략 수: 2가지</text>
+        <text x="490" y="330" text-anchor="middle" fill="#f78166" font-size="10">{T, H} 뿐</text>
+      </svg>
+      <div class="diagram-caption">정보집합 비교: 완전 정보 vs 불완전 정보 — Matching Pennies 예시</div>
+    </div>
+
+    <div class="prof-quote">
+      <p>
+        "인포메이션 셋이 싱글톤인 상황에서 퍼펙트 인포메이션이면 나는 그 상황에 맞춰서 컨틴전트 플랜 오브 액션을 다 짤 수 있어요. 2 by 2 맞아. 근데 만약에 내가 여기 있는지 저기 있는지 모르는 상황이야. 그러면 그때는 뭉뚱그려서 어떻게 할지만 생각해야 돼요. 그 상황에서 나는 T를 할지 H를 할지 결정을 해야 돼. 스트레터지 스페이스가 달라집니다."
+      </p>
+    </div>
+
+    <div class="example-block">
+      <div class="example-block-header">정보집합에 따른 전략 수 변화</div>
+      <div class="example-block-body">
+        <p>
+          <strong>완전 정보(Perfect Information)</strong>인 경우: Player 2는 자신이 왼쪽 노드에 있는지, 오른쪽 노드에 있는지 정확히 압니다. 따라서 각 노드별로 독립적인 계획을 세울 수 있어요.
+          → 전략: {TT, TH, HT, HH} <strong>총 4가지</strong>
+        </p>
+        <p>
+          <strong>불완전 정보(Imperfect Information)</strong>인 경우: Player 2는 두 노드 중 어디에 있는지 모릅니다. 구분이 안 되므로 하나의 행동만 선택 가능해요.
+          → 전략: {T, H} <strong>총 2가지</strong>
+        </p>
+        <p>
+          <em>→ 정보집합이 달라지면 전략 공간 자체가 달라지고, 따라서 내시균형도 달라집니다!</em>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── SECTION 5 ── -->
+  <section class="section" id="s5">
+    <div class="section-header">
+      <span class="section-num">05</span>
+      <h2>Action vs. Strategy — 가장 중요한 구분</h2>
+    </div>
+
+    <div class="prose">
+      <p>Extensive Form에서는 <strong>Action(행동)</strong>과 <strong>Strategy(전략)</strong>를 반드시 구분해야 합니다. 강의에서 교수님이 가장 강조하신 부분입니다.</p>
+    </div>
+
+    <div class="compare-grid">
+      <div class="compare-card normal">
+        <div class="compare-card-header">⚡ Action (행동)</div>
+        <ul>
+          <li>특정 정보집합(information set)에서 그 순간에 선택하는 것</li>
+          <li>예: "지금 여기서 T를 선택한다"</li>
+          <li>하나의 노드/정보집합에서의 단일 선택</li>
+          <li>게임이 진행되면서 실현됨</li>
+        </ul>
+      </div>
+      <div class="compare-card extensive">
+        <div class="compare-card-header">📋 Strategy (전략)</div>
+        <ul>
+          <li>게임 시작 전에 <strong>모든 정보집합에 대해</strong> 미리 짜두는 완전한 행동 계획</li>
+          <li>예: "왼쪽 노드면 T, 오른쪽 노드면 H를 선택한다"</li>
+          <li>모든 가능한 상황에 대한 조건부 계획</li>
+          <li>게임 시작 전에 완성됨 (contingent plan)</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="prof-quote">
+      <p>
+        "스트레터지는 뭐라고 그때그때 맞춰서 행동하는 게 아니야. 이번에는 시작하기 전에 컨틴전트 플랜 오브 액션을 짜는 거야. 이 상황이 되면 이렇게 할 거야, 이 상황이 되면 이렇게 할 거야. 내가 어디 있는지 알면 그 정확한 상황에 맞추면 되는 거고, 정확하게 모르겠다면 그 정보집합 전체를 뭉뚱그려서 그 상황에서 어떻게 해야 할지를 정해놓는 거야."
+      </p>
+    </div>
+
+    <div class="key-point">
+      <span class="key-icon">⚠️</span>
+      <p>
+        교수님 경고: <strong>"내가 전략을 describe하라고 했을 때, 플레이어가 행동을 선택할 수 있는 모든 정보집합에 대해 행동을 명시하지 않으면 틀린 답입니다."</strong> 예를 들어 어떤 노드에 실제로 도달하지 않는다 하더라도, 그 노드에서의 행동까지 전략에 포함시켜야 합니다.
+      </p>
+    </div>
+
+    <div class="example-block">
+      <div class="example-block-header">전략 작성 예시 — Matching Pennies (완전 정보 버전)</div>
+      <div class="example-block-body">
+        <p>Player 1이 먼저 T 또는 H를 선택하고, Player 2가 그것을 보고 선택하는 경우:</p>
+        <p>
+          <strong>Player 1의 전략 공간:</strong> {T, H} — 초기 노드 하나뿐이므로 2가지<br>
+          <strong>Player 2의 전략 공간:</strong> {TT, TH, HT, HH} — 두 개의 별개 정보집합이 있으므로 4가지<br>
+          (첫 번째 글자 = P1이 T 선택했을 때 P2 행동, 두 번째 글자 = P1이 H 선택했을 때 P2 행동)
+        </p>
+        <p>
+          예: P2의 전략 "TH"는 → "P1이 T를 했으면 나는 T, P1이 H를 했으면 나는 H를 선택하겠다"는 완전한 계획
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── SECTION 6 ── -->
+  <section class="section" id="s6">
+    <div class="section-header">
+      <span class="section-num">06</span>
+      <h2>두 게임의 관계: 변환과 한계</h2>
+    </div>
+
+    <div class="relation-box">
+      <h3>📐 Extensive Form ↔ Normal Form 관계</h3>
+      <div class="relation-item">
+        <span class="relation-arrow">→</span>
+        <p>
+          <strong>Extensive Form → Normal Form (항상 가능, 유일):</strong><br>
+          전개형 게임이 주어지면, 각 플레이어의 전략 공간과 보수 함수를 정의하여 <em>유일한</em> 전략형 게임(매트릭스)으로 변환할 수 있습니다. 전략에 레이블을 적절히 붙이면 항상 하나의 Normal Form이 도출됩니다.
+        </p>
+      </div>
+      <div class="relation-item">
+        <span class="relation-arrow">←</span>
+        <p>
+          <strong>Normal Form → Extensive Form (가능하지만 여러 개):</strong><br>
+          하나의 전략형 게임에 대응하는 전개형 게임은 <em>여러 개</em> 존재할 수 있습니다. 동일한 보수 구조를 가지더라도 순서나 정보 구조가 다른 다양한 게임 트리가 Normal Form을 공유할 수 있습니다.
+        </p>
+      </div>
+      <div class="relation-item">
+        <span class="relation-arrow">⚠</span>
+        <p>
+          <strong>Nash Equilibrium의 정의 연결:</strong><br>
+          전개형 게임의 내시균형은 그것을 Normal Form으로 변환한 뒤의 내시균형으로 정의됩니다. 단, Extensive Form에서는 이것보다 더 정제된 균형 개념인 <strong>Subgame Perfect Nash Equilibrium(SPNE)</strong>을 사용합니다.
+        </p>
+      </div>
+    </div>
+
+    <div class="prof-quote">
+      <p>
+        "모든 extensive form 게임에 대해, 전략에 적절한 레이블을 붙이면 유일한 normal form representation이 존재합니다. 반대는 성립하지 않습니다. Normal form으로 표현된 게임에 대해서는 여러 가지 다른 extensive form representation이 존재할 수 있어요." (Lecture Note 3)
+      </p>
+    </div>
+
+    <div class="key-point">
+      <span class="key-icon">🎯</span>
+      <p>
+        Normal Form에서 찾은 Nash Equilibrium은 Extensive Form의 dynamic한 구조를 무시하기 때문에, 실제로 도달하지 않는 노드에서의 <strong>"비신뢰할 수 있는 위협(non-credible threat)"</strong>을 포함할 수 있습니다. 이것을 제거하기 위해 SPNE(부분 게임 완전 균형)가 필요합니다 — 다음 강의에서 다룹니다.
+      </p>
+    </div>
+  </section>
+
+  <!-- ── SECTION 7 ── -->
+  <section class="section" id="s7">
+    <div class="section-header">
+      <span class="section-num">07</span>
+      <h2>한눈에 보는 비교표</h2>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>항목</th>
+            <th><span class="tag-normal">Normal Form</span></th>
+            <th><span class="tag-ext">Extensive Form</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>별칭</td>
+            <td>전략형 게임, Strategic Form</td>
+            <td>전개형 게임, Game Tree</td>
+          </tr>
+          <tr>
+            <td>표현 방식</td>
+            <td>행렬(payoff matrix)</td>
+            <td>게임 트리(tree diagram)</td>
+          </tr>
+          <tr>
+            <td>시간 구조</td>
+            <td>동시 선택 (또는 무시)</td>
+            <td>순차적 선택 명시적으로 표현</td>
+          </tr>
+          <tr>
+            <td>정보 구조</td>
+            <td>상대방 행동 관찰 불가 가정</td>
+            <td>정보집합(information set)으로 명시</td>
+          </tr>
+          <tr>
+            <td>Strategy 정의</td>
+            <td>전략 공간 S에서의 하나의 선택</td>
+            <td>모든 정보집합에 대한 완전한 행동 계획 (contingent plan)</td>
+          </tr>
+          <tr>
+            <td>균형 개념</td>
+            <td>Nash Equilibrium</td>
+            <td>Nash Equilibrium + SPNE (backward induction)</td>
+          </tr>
+          <tr>
+            <td>상호 변환</td>
+            <td>← 여러 Extensive Form에서 가능</td>
+            <td>→ 유일한 Normal Form으로 변환 가능</td>
+          </tr>
+          <tr>
+            <td>First Mover 효과</td>
+            <td>표현 불가</td>
+            <td>명시적으로 분석 가능</td>
+          </tr>
+          <tr>
+            <td>현실 예시</td>
+            <td>가위바위보(동시), Cournot 복점</td>
+            <td>바둑/체스, Stackelberg 복점, 입찰 게임</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="key-point">
+      <span class="key-icon">🚀</span>
+      <p>
+        <strong>핵심 직관 한 문장:</strong> Normal Form은 "봉투를 봉인하고 동시에 개봉하는" 게임이고, Extensive Form은 "바둑 두듯 번갈아 두는" 게임입니다. 둘은 수학적으로 변환 가능하지만, <strong>Extensive Form이 훨씬 더 많은 현실적 상황을 정확하게 포착</strong>합니다.
+      </p>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  ECO5031 · Game Theory · Lecture Note 3 · SKKU Economics · 2026 Spring<br>
+  <span style="color:var(--text-dim); font-size:11px; margin-top:6px; display:block;">Based on Lecture Notes by Prof. Keeyoung Rhee & Class Recordings</span>
+</footer>
+
+<script>
+  // Progress bar
+  window.addEventListener('scroll', () => {
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const progress = (window.scrollY / docHeight) * 100;
+    document.getElementById('progress').style.width = progress + '%';
+  });
+</script>
+</body>
+</html>
